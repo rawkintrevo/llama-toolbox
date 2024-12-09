@@ -7,11 +7,11 @@ This project contains tools that can be used in LLaMA LLMs. Each tool is designe
 | API    | Function                                | Status       |  
 |--------|-----------------------------------------|--------------|  
 | GitHub | [GetRepoContents](docs/github/index.md) | :white_check_mark: Implemented |
-| NHSTA  | [ComplaintsByVehicle](
-| Tool B | Data visualization                      | :construction: In Progress    |  
-| Tool C | Machine learning model integration      | :triangular_flag_on_post: Roadmap    |  
-| Tool D | User authentication                     | :hourglass_flowing_sand: Low Priority |  
-| Tool E | External API data fetching              | :x: Won't Implement |  
+| NHSTA  | [ComplaintsByVehicle](docs/nhsta/index.md) | :white_check_mark: Implemented |
+| GitHub | CommitFile | :construction: In Progress |
+| DeepInfra | WriteCode | :triangular_flag_on_post: Roadmap |
+| lm-eval | EvaluateModel | :hourglass_flowing_sand: Low Priority |
+| WatsonX | idk | :x: Won't Implement |
   
 ## Status Icons  
   
@@ -40,3 +40,4 @@ class CustomTool(BaseTool):
     def fn(self, *args, **kwargs):  
         # Implement your functionality here  
         pass  
+```
