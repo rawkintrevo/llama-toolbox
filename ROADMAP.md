@@ -4,14 +4,15 @@ This project contains tools that can be used in LLaMA LLMs. Each tool is designe
   
 ## Tools Overview  
   
-| API    | Function                                | Status       |  
-|--------|-----------------------------------------|--------------|  
-| GitHub | [GetRepoContents](docs/github/index.md) | :white_check_mark: Implemented |
+| API    | Function                                   | Status       |  
+|--------|--------------------------------------------|--------------|  
+| GitHub | [GetRepoContents](docs/github/index.md)    | :white_check_mark: Implemented |
 | NHSTA  | [ComplaintsByVehicle](docs/nhsta/index.md) | :white_check_mark: Implemented |
-| GitHub | CommitFile | :construction: In Progress |
-| DeepInfra | WriteCode | :triangular_flag_on_post: Roadmap |
-| lm-eval | EvaluateModel | :hourglass_flowing_sand: Low Priority |
-| WatsonX | idk | :x: Won't Implement |
+| GitHub | CreateIssue                                | :construction: In Progress |
+| GitHub | CommitFile                                 | :construction: In Progress |
+| DeepInfra | WriteCode                                  | :triangular_flag_on_post: Roadmap |
+| lm-eval | EvaluateModel                              | :hourglass_flowing_sand: Low Priority |
+| WatsonX | idk                                        | :x: Won't Implement |
   
 ## Status Icons  
   
