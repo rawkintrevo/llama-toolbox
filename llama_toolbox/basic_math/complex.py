@@ -5,7 +5,8 @@ def complex_response(prompt: str,
                      tool_map: dict,
                      openai_like_client,
                      model_name: str = "meta-llama/Llama-3.3-70B-Instruct",
-                     system: str = "Think carefully about the problem presented, break it down into a series of steps before attempting to compute."):
+                     system: str = "Think carefully about the problem presented, break it down into a series of steps before attempting to compute.",
+                     max_thoughts= 3):
     messages = []
     if system:
         messages.append({
@@ -22,12 +23,14 @@ def complex_response(prompt: str,
         tools=tool_desc_list,
         tool_choice="auto",
     )
-    while response.choices[0].message.content is None:
+    thoughts = 1
+    while (response.choices[0].message.content is None) and (thoughts < max_thoughts):
+        thoughts += 1
         print('thinking...')
         tool_calls = response.choices[0].message.tool_calls
         messages.append(response.choices[0].message)
         process_tool_calls(tool_calls, tool_map, messages)
-        
+
     messages.append({ 'role' : 'assistant', 'content' : response.choices[0].message.content})
     return {'messages': messages, 'last_response': response}
 
