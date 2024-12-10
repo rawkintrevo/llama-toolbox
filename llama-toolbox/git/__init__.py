@@ -1,5 +1,6 @@
 import requests
 
+from create_issue import CreateIssue
 
 from ..base import BaseTool
 
