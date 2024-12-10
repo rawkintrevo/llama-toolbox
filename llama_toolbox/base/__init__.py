@@ -39,10 +39,3 @@ class ExampleTool(BaseTool):
         print("Function called with", args, kwargs)
         return "Result"
 
-# Usage
-example_tool = ExampleTool(api_key="your_api_key_here")
-print(example_tool.definition)
-# Output: {'name': 'ExampleTool', 'description': 'This is an example tool', 'version': '1.0.0'}
-
-result = example_tool.fn(1, 2, key='value')
-# Output: Function called with (1, 2) {'key': 'value'}
