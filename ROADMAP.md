@@ -4,15 +4,14 @@ This project contains tools that can be used in LLaMA LLMs. Each tool is designe
   
 ## Tools Overview  
   
-| API    | Function                                   | Status       |  
-|--------|--------------------------------------------|--------------|  
-| GitHub | [GetRepoContents](docs/github/index.md)    | :white_check_mark: Implemented |
-| NHSTA  | [ComplaintsByVehicle](docs/nhsta/index.md) | :white_check_mark: Implemented |
-| GitHub | [CreateIssue](docs/github/create_issue.md) | :white_check_mark: Implemented |  
-| GitHub | [CommitFile](docs/github/commit_file.md)   | :white_check_mark: Implemented |
-| DeepInfra | WriteCode                                  | :triangular_flag_on_post: Roadmap |
-| lm-eval | EvaluateModel                              | :hourglass_flowing_sand: Low Priority |
-| WatsonX | idk                                        | :x: Won't Implement |
+| API             | Documentation                              | Status       |  
+|-----------------|--------------------------------------------|--------------|  
+| GitHub          | [Documentation](docs/github/index.md)      | :white_check_mark: Implemented |
+| NHSTA           | [ComplaintsByVehicle](docs/nhsta/index.md) | :white_check_mark: Implemented |
+| City of Chicago | 311 API |   :triangular_flag_on_post: Roadmap |
+| DeepInfra       | WriteCode                                  | :triangular_flag_on_post: Roadmap |
+| lm-eval         | EvaluateModel                              | :hourglass_flowing_sand: Low Priority |
+| WatsonX         | idk                                        | :x: Won't Implement |
   
 ## Status Icons  
   
