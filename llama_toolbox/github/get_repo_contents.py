@@ -1,7 +1,4 @@
 import requests
-
-from create_issue import CreateIssue
-
 from ..base import BaseTool
 
 class GetRepoContents(BaseTool):
@@ -13,16 +10,16 @@ class GetRepoContents(BaseTool):
         self.api_key = api_key
         self.name = name
         self.eoi = {'js' : 'javascript',
-                 'jsx' : 'javascript',
-                 'ts' : 'typescript',
-                 'tsx' : 'typescript',
-                 'py' : 'python',
-                 'html' : 'html',
-                 'css' : 'css',
-                 'scss' : 'scss',
-                 'sass' : 'sass',
-                 'md' : 'markdown',
-                 'json' : 'json'}
+                    'jsx' : 'javascript',
+                    'ts' : 'typescript',
+                    'tsx' : 'typescript',
+                    'py' : 'python',
+                    'html' : 'html',
+                    'css' : 'css',
+                    'scss' : 'scss',
+                    'sass' : 'sass',
+                    'md' : 'markdown',
+                    'json' : 'json'}
 
     @property
     def definition(self):
@@ -54,8 +51,8 @@ class GetRepoContents(BaseTool):
         }
 
     def fn(self, repo_url,
-                 directory_path = "/",
-                 eoi = None)-> str:
+           directory_path = "/",
+           eoi = None)-> str:
         if eoi is None:
             eoi = self.eoi
         # Extracting the owner and repo name from the URL
