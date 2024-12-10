@@ -29,7 +29,13 @@ def complex_response(prompt: str,
         print('thinking...')
         tool_calls = response.choices[0].message.tool_calls
         messages.append(response.choices[0].message)
-        process_tool_calls(tool_calls, tool_map, messages)
+        out = process_tool_calls(tool_calls,
+                                 tool_map,
+                                 messages,
+                                 tool_desc_list,
+                                 openai_like_client)
+        messages = out['messages']
+        response = out['response']
 
     messages.append({ 'role' : 'assistant', 'content' : response.choices[0].message.content})
     return {'messages': messages, 'last_response': response}
@@ -81,13 +87,17 @@ def process_tool_call(tool_call, tool_map, messages):
             "content": function_response,
         })
 
-        return function_response
+        return messages
 
     else:
         # Handle non-function tool calls or errors
         return None
 
-def process_tool_calls(tool_calls, tool_map, messages):
+def process_tool_calls(tool_calls,
+                       tool_map,
+                       messages,
+                       tool_desc_list,
+                       openai_like_client):
     """
     Process a list of tool calls and their potential nested calls.
 
@@ -97,4 +107,11 @@ def process_tool_calls(tool_calls, tool_map, messages):
     - messages (list): A list to append the processed messages to.
     """
     for tool_call in tool_calls:
-        process_tool_call(tool_call, tool_map, messages)
+        messages = process_tool_call(tool_call, tool_map, messages)
+        response = openai_like_client.chat.completions.create(
+            model="meta-llama/Llama-3.3-70B-Instruct",
+            messages=messages,
+            tools=tool_desc_list,
+            tool_choice="auto",
+        )
+    return {"messages": messages, "response": response}
