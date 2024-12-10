@@ -8,6 +8,7 @@ A minimal contribution requires the following steps:
 - Add the function, with a link to your docs in the `index.md` file in `docs/<your-api>/`.
 - If it is a new API, add it in `ROADMAP.md`
 
+
 Example usage:
 ```python  
 from llama-toolbox.base import BaseTool  
