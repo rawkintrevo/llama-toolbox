@@ -8,8 +8,9 @@ This project contains tools that can be used in LLaMA LLMs. Each tool is designe
 |-----------------|--------------------------------------------|---------------------------------------|  
 | GitHub          | [Documentation](docs/github/index.md)      | :construction: Under Construction     |
 | NHSTA           | [ComplaintsByVehicle](docs/nhsta/index.md) | :white_check_mark: Implemented        |
-| Basic Math      | [Documentation](docs/basic_math/index.md) | :white_check_mark: Implemented        |
-| City of Chicago | 311 API | :triangular_flag_on_post: Roadmap     |
+| ArXiv           | [Documentation](docs/arxiv/index.md)       | :white_check_mark: Implemented        |
+| Basic Math      | [Documentation](docs/basic_math/index.md)  | :white_check_mark: Implemented        |
+| City of Chicago | 311 API                                    | :triangular_flag_on_post: Roadmap     |
 | DeepInfra       | WriteCode                                  | :triangular_flag_on_post: Roadmap     |
 | lm-eval         | EvaluateModel                              | :hourglass_flowing_sand: Low Priority |
 | WatsonX         | idk                                        | :x: Won't Implement                   |
