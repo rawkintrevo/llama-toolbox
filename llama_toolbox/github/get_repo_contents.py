@@ -40,10 +40,10 @@ class GetRepoContents(BaseTool):
                             "type": "string",
                             "description": "Path from repository root of the directory of interest. Default '/'"
                         },
-                        "eoi": {
-                            "type": "string",
-                            "description": "Extensions of interest. If not set, defaults to self.eoi (which contains common Python, Javascript, HTML, and Markdown extension).",
-                        }
+                        # "eoi": {
+                        #     "type": "dictionary",
+                        #     "description": "Extensions of interest. If not set, defaults to self.eoi (which contains common Python, Javascript, HTML, and Markdown extension). Example: `{'.js': 'javascript'}`",
+                        # }
                     },
                     "required": ["repo_url"]
                 }
