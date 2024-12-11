@@ -6,7 +6,8 @@ def complex_response(prompt: str,
                      openai_like_client,
                      model_name: str = "meta-llama/Llama-3.3-70B-Instruct",
                      system: str = "Think carefully about the problem presented, break it down into a series of steps before attempting to compute.",
-                     max_thoughts= 3):
+                     max_thoughts: int= 3,
+                     temperature: float=0.3):
     messages = []
     if system:
         messages.append({
@@ -22,6 +23,7 @@ def complex_response(prompt: str,
         messages=messages,
         tools=tool_desc_list,
         tool_choice="auto",
+        temperature=temperature
     )
     thoughts = 1
     while (response.choices[0].message.content is None) and (thoughts < max_thoughts):
