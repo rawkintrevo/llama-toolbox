@@ -12,4 +12,4 @@ Todo
 | GitHub | [CreateIssue](create_issue.md)          | :white_check_mark: Implemented |  
 | GitHub | [CommitFile](commit_file.md)            | :white_check_mark: Implemented |
 | GitHub | [Search](search.md)                     | :white_check_mark: Implemented |
-
+| GitHub | [ReadIssue](read_issue.md)              | :white_check_mark: Implemented |  
