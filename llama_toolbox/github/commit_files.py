@@ -8,10 +8,21 @@ from..base import BaseTool
 class CommitFiles(BaseTool):
     def __init__(self,
                  api_key=None,
-                 name="commit_files",):
+                 name="commit_files",
+                 git_user_name=None,
+                 git_user_email=None):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.git_user_name = git_user_name
+        self.git_user_email = git_user_email
+
+        if self.git_user_name and self.git_user_email:
+            self.configure_git_user()
+
+    def configure_git_user(self):
+        git.config('--global', 'user.name', self.git_user_name)
+        git.config('--global', 'user.email', self.git_user_email)
 
     @property
     def definition(self):
@@ -115,4 +126,4 @@ class CommitFiles(BaseTool):
         else:
             repo.git.push('origin', branch)
 
-        return "Files committed and pushed successfully"
+        return "Files committed and pushed successfully"  
