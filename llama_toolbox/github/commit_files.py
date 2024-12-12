@@ -70,11 +70,16 @@ class CommitFiles(BaseTool):
 
             # If create_new_branch is True, create a new branch
         if create_new_branch:
+            # Checkout the base branch
             try:
-                repo.git.checkout('-b', branch, base_branch)
+                repo.git.checkout(base_branch)
             except git.exc.GitCommandError:
-                # If the branch already exists, check it out
-                repo.git.checkout(branch)
+                # If the base branch does not exist, raise an error
+                raise ValueError(f"Base branch '{base_branch}' does not exist.")
+
+                # Create a new branch
+            repo.git.checkout('-b', branch)
+
         else:
             try:
                 repo.git.checkout(branch)
