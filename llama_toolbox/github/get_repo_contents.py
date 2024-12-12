@@ -34,7 +34,7 @@ class GetRepoContents(BaseTool):
                         "repo_url": {
                             "type": "string",
                             "description":
-                                "The URL of the Repo, e.g. https://github.com/rawkintrevo/llama-toolbox"
+                                "The URL of the Repo this is for reading an entire repo, not individual files., e.g. https://github.com/rawkintrevo/llama-toolbox"
                         },
                         "directory_path": {
                             "type": "string",
