@@ -29,7 +29,7 @@ class CommitFiles(BaseTool):
                         },
                         "branch": {
                             "type": "string",
-                            "description": "The branch to commit to, e.g. 'main'"
+                            "description": "The branch to commit to, e.g. 'main' or 'new-branch'. If the branch does not exist, set create_new_branch to True"
                         },
                         "commit_msg": {
                             "type": "string",
@@ -38,6 +38,14 @@ class CommitFiles(BaseTool):
                         "files_json": {
                             "type": "string",
                             "description": "A JSON string containing a list of files to commit, e.g. '{\"files\": [{\"path\": \"file1.py\", \"code\": \"import os\"}, {\"path\": \"file2.py\", \"code\": \"import sys\"}]}'"
+                        },
+                        "create_new_branch": {
+                            "type": "boolean",
+                            "description": "Optional. If True, create a new branch with the specified name if it does not exist. Default: False"
+                        },
+                        "base_branch": {
+                            "type": "string",
+                            "description": "Optional. The base branch to create the new branch from. Default: 'main'"
                         }
                     },
                     "required": ["repo_url", "branch", "commit_msg", "files_json"]
@@ -45,7 +53,7 @@ class CommitFiles(BaseTool):
             }
         }
 
-    def fn(self, repo_url, branch, commit_msg, files_json):
+    def fn(self, repo_url, branch, commit_msg, files_json, create_new_branch=False, base_branch='main'):
         # Extracting the owner and repo name from the URL
         repo_parts = repo_url.rstrip('/').split('/')
         owner = repo_parts[-2]
@@ -60,10 +68,21 @@ class CommitFiles(BaseTool):
             repo = git.Repo(repo_dir)
             repo.git.pull()
 
-            # Check out the specified branch
-        repo.git.checkout(branch)
+            # If create_new_branch is True, create a new branch
+        if create_new_branch:
+            try:
+                repo.git.checkout('-b', branch, base_branch)
+            except git.exc.GitCommandError:
+                # If the branch already exists, check it out
+                repo.git.checkout(branch)
+        else:
+            try:
+                repo.git.checkout(branch)
+            except git.exc.GitCommandError:
+                # If the branch does not exist, raise an error
+                raise ValueError(f"Branch '{branch}' does not exist. Set create_new_branch to True to create it.")
 
-        # Load the JSON string
+                # Load the JSON string
         files = json.loads(files_json)['files']
 
         # Update or create the files
@@ -80,6 +99,9 @@ class CommitFiles(BaseTool):
         repo.git.commit('-m', commit_msg)
 
         # Push the commit
-        repo.git.push('origin', branch)
+        if create_new_branch:
+            repo.git.push('origin', branch, '--set-upstream')
+        else:
+            repo.git.push('origin', branch)
 
         return "Files committed and pushed successfully"  
