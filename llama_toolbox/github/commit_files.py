@@ -17,12 +17,6 @@ class CommitFiles(BaseTool):
         self.git_user_name = git_user_name
         self.git_user_email = git_user_email
 
-        if self.git_user_name and self.git_user_email:
-            self.configure_git_user()
-
-    def configure_git_user(self):
-        git.config('--global', 'user.name', self.git_user_name)
-        git.config('--global', 'user.email', self.git_user_email)
 
     @property
     def definition(self):
@@ -104,9 +98,10 @@ class CommitFiles(BaseTool):
                 # If the branch does not exist, raise an error
                 raise ValueError(f"Branch '{branch}' does not exist. Set create_new_branch to True to create it.")
 
-                # Load the JSON string
+        repo.config_writer().set_value("user", "name", self.git_user_name).release()
+        repo.config_writer().set_value("user", "email", self.git_user_email).release()
+        # Load the JSON string
         files = json.loads(files_json)['files']
-
         # Update or create the files
         for file in files:
             file_path = file['path']
@@ -126,4 +121,4 @@ class CommitFiles(BaseTool):
         else:
             repo.git.push('origin', branch)
 
-        return "Files committed and pushed successfully"  
+        return "Files committed and pushed successfully"
