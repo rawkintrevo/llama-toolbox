@@ -98,8 +98,7 @@ class CommitFiles(BaseTool):
                 # If the branch does not exist, raise an error
                 raise ValueError(f"Branch '{branch}' does not exist. Set create_new_branch to True to create it.")
 
-        repo.config_writer().set_value("user", "name", self.git_user_name).release()
-        repo.config_writer().set_value("user", "email", self.git_user_email).release()
+
         # Load the JSON string
         files = json.loads(files_json)['files']
         # Update or create the files
@@ -112,6 +111,8 @@ class CommitFiles(BaseTool):
                 # Add the files to the commit
         repo.git.add('.')
 
+        repo.config_writer().set_value("user", "name", self.git_user_name).release()
+        repo.config_writer().set_value("user", "email", self.git_user_email).release()
         # Commit the files
         repo.git.commit('-m', commit_msg)
 
