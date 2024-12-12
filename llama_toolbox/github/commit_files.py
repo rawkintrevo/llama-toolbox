@@ -64,11 +64,17 @@ class CommitFiles(BaseTool):
         try:
             repo = git.Repo.clone_from(repo_url, repo_dir)
         except git.exc.GitCommandError:
-            # If the repository already exists, pull the latest changes
+            # If the repository already exists
             repo = git.Repo(repo_dir)
-            repo.git.pull()
+            # Check if the branch has an upstream set
+            if repo.heads[branch].tracking_branch() is None:
+                # If not, skip the pull
+                pass
+            else:
+                # If it does, pull the latest changes
+                repo.git.pull()
 
-            # If create_new_branch is True, create a new branch
+                # If create_new_branch is True, create a new branch
         if create_new_branch:
             # Checkout the base branch
             try:
@@ -109,4 +115,4 @@ class CommitFiles(BaseTool):
         else:
             repo.git.push('origin', branch)
 
-        return "Files committed and pushed successfully"  
+        return "Files committed and pushed successfully"
