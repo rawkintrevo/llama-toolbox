@@ -65,6 +65,10 @@ class CommitFiles(BaseTool):
         owner = repo_parts[-2]
         repo = repo_parts[-1]
 
+        if repo_url.startswith("https://"):
+            repo_url = repo_url.replace("https://", "https://"+self.git_user_name + ":" + self.api_key+"@")
+        elif repo_url.startswith("github.com"):
+            repo_url = f"https://{self.git_user_name}:{self.api_key}@{repo_url}"
         # Clone the repository
         repo_dir = f"/tmp/{repo}"
 
@@ -73,11 +77,11 @@ class CommitFiles(BaseTool):
             repo = git.Repo(repo_dir)
         else:
             repo = git.Repo.clone_from(repo_url, repo_dir)
-        # repo.config_writer().set_value("user", "name", self.git_user_name).release()
-        # repo.config_writer().set_value("user", "email", self.git_user_email).release()
+        repo.config_writer().set_value("user", "name", self.git_user_name).release()
+        repo.config_writer().set_value("user", "email", self.git_user_email).release()
 
-        os.system(f"git config --global user.name \"{self.git_user_name}\"")
-        os.system(f"git config --global user.email \"{self.git_user_email}\"")
+        # os.system(f"git config --global user.name \"{self.git_user_name}\"")
+        # os.system(f"git config --global user.email \"{self.git_user_email}\"")
 
         # Check if the branch has an upstream set
         if branch in repo.heads:

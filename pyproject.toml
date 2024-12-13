@@ -9,7 +9,7 @@ packages = [{include = "llama_toolbox"}]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-
+GitPython = "^3.1.43"
 
 [build-system]
 requires = ["poetry-core"]
