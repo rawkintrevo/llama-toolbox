@@ -106,7 +106,7 @@ class CommitFiles(BaseTool):
 
         # Push the commit
         if branch in repo.heads:
-            if repo.heads['branch'].tracking_branch() is not None:
+            if repo.heads[branch].tracking_branch() is not None:
                 repo.git.push()
                 return "Files committed and pushed successfully"
         else:
