@@ -128,8 +128,8 @@ class CommitFiles(BaseTool):
 
         # Push the commit
         if create_new_branch:
-            repo.git.push('origin', branch, '--set-upstream')
+            repo.push('origin', branch, '--set-upstream')
         else:
-            repo.git.push('origin', branch)
+            repo.push('origin', branch)
 
         return "Files committed and pushed successfully"
