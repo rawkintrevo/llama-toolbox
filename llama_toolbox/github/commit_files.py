@@ -123,11 +123,11 @@ class CommitFiles(BaseTool):
         repo.git.add('.')
 
 
-        author = git.Actor("Bot Test", "bot@test.com")
+        # author = git.Actor("Bot Test", "bot@test.com")
         # committer = git.Actor(self.git_user_name, self.git_user_email)
         # Commit with a commit message, author, and committer.
         # Commit the files
-        repo.git.commit('-m', commit_msg,author=author)
+        repo.git.commit('-m', commit_msg,author="Bot Test <foo@baz.com>")
 
         # Push the commit
         if create_new_branch:
