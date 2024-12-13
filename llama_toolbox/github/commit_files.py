@@ -88,23 +88,23 @@ class CommitFiles(BaseTool):
                 pass
         else:
             # If it does, pull the latest changes
-            repo.git.pull()
+            repo.index.pull()
 
             # If create_new_branch is True, create a new branch
         if create_new_branch:
             # Checkout the base branch
             try:
-                repo.git.checkout(base_branch)
+                repo.index.checkout(base_branch)
             except git.exc.GitCommandError:
                 # If the base branch does not exist, raise an error
                 raise ValueError(f"Base branch '{base_branch}' does not exist.")
 
                 # Create a new branch
-            repo.git.checkout('-b', branch)
+            repo.index.checkout('-b', branch)
 
         else:
             try:
-                repo.git.checkout(branch)
+                repo.index.checkout(branch)
             except git.exc.GitCommandError:
                 # If the branch does not exist, raise an error
                 raise ValueError(f"Branch '{branch}' does not exist. Set create_new_branch to True to create it.")
@@ -120,16 +120,16 @@ class CommitFiles(BaseTool):
                 f.write(code)
 
                 # Add the files to the commit
-        repo.git.add('.')
+        repo.index.add('.')
 
 
         # Commit the files
-        repo.git.commit('-m', commit_msg)
+        repo.index.commit('-m', commit_msg)
 
         # Push the commit
         if create_new_branch:
-            repo.push('origin', branch, '--set-upstream')
+            repo.index.push('origin', branch, '--set-upstream')
         else:
-            repo.push('origin', branch)
+            repo.index.push('origin', branch)
 
         return "Files committed and pushed successfully"
