@@ -77,9 +77,12 @@ class CommitFiles(BaseTool):
         repo.config_writer().set_value("user", "email", self.git_user_email).release()
 
         # Check if the branch has an upstream set
-        if repo.heads[branch].tracking_branch() is None:
-            # If not, skip the pull
-            pass
+        if branch in repo.heads:
+            if repo.heads[branch].tracking_branch() is None:
+                # If not, skip the pull
+                pass
+            else:
+                pass
         else:
             # If it does, pull the latest changes
             repo.git.pull()
