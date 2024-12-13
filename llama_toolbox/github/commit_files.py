@@ -35,7 +35,7 @@ class CommitFiles(BaseTool):
                         },
                         "branch": {
                             "type": "string",
-                            "description": "The branch to commit to, e.g. 'main' or 'new-branch'. If the branch does not exist, set create_new_branch to True"
+                            "description": "The branch to commit to, e.g. 'main' or 'new-branch'"
                         },
                         "commit_msg": {
                             "type": "string",
@@ -44,10 +44,6 @@ class CommitFiles(BaseTool):
                         "files_json": {
                             "type": "string",
                             "description": "A JSON string containing a list of files to commit, e.g. '{\"files\": [{\"path\": \"file1.py\", \"code\": \"import os\"}, {\"path\": \"file2.py\", \"code\": \"import sys\"}]}'"
-                        },
-                        "create_new_branch": {
-                            "type": "boolean",
-                            "description": "Optional. If True, create a new branch with the specified name if it does not exist. Default: False"
                         },
                         "base_branch": {
                             "type": "string",
@@ -59,7 +55,7 @@ class CommitFiles(BaseTool):
             }
         }
 
-    def fn(self, repo_url, branch, commit_msg, files_json, create_new_branch=False, base_branch='main'):
+    def fn(self, repo_url, branch, commit_msg, files_json, base_branch='main'):
         # Extracting the owner and repo name from the URL
         repo_parts = repo_url.rstrip('/').split('/')
         owner = repo_parts[-2]
@@ -80,39 +76,19 @@ class CommitFiles(BaseTool):
         repo.config_writer().set_value("user", "name", self.git_user_name).release()
         repo.config_writer().set_value("user", "email", self.git_user_email).release()
 
-        # os.system(f"git config --global user.name \"{self.git_user_name}\"")
-        # os.system(f"git config --global user.email \"{self.git_user_email}\"")
-
-        # Check if the branch has an upstream set
+        # Check if the branch exists
         if branch in repo.heads:
-            if repo.heads[branch].tracking_branch() is None:
-                # If not, skip the pull
-                pass
-            else:
-                pass
-        else:
-            # If it does, pull the latest changes
+            # If it does, checkout the branch and pull the latest changes
+            repo.git.checkout(branch)
             repo.git.pull()
-
-            # If create_new_branch is True, create a new branch
-        if create_new_branch:
-            # Checkout the base branch
+        else:
+            # If it does not exist, checkout the base branch and create a new branch
             try:
                 repo.git.checkout(base_branch)
             except git.exc.GitCommandError:
                 # If the base branch does not exist, raise an error
                 raise ValueError(f"Base branch '{base_branch}' does not exist.")
-
-                # Create a new branch
             repo.git.checkout('-b', branch)
-
-        else:
-            try:
-                repo.git.checkout(branch)
-            except git.exc.GitCommandError:
-                # If the branch does not exist, raise an error
-                raise ValueError(f"Branch '{branch}' does not exist. Set create_new_branch to True to create it.")
-
 
         # Load the JSON string
         files = json.loads(files_json)['files']
@@ -122,21 +98,16 @@ class CommitFiles(BaseTool):
             code = file['code']
             with open(f"{repo_dir}/{file_path}", 'w') as f:
                 f.write(code)
-            repo.get.add(f"{repo_dir}/{file_path}")
-                # Add the files to the commit
-        # repo.git.add('.')
+            repo.git.add(file_path)
 
-
-        # author = git.Actor("Bot Test", "bot@test.com")
-        # committer = git.Actor(self.git_user_name, self.git_user_email)
         # Commit with a commit message, author, and committer.
         # Commit the files
-        repo.git.commit('-m', commit_msg,author=f"{self.git_user_name} <{self.git_user_email}>")
+        repo.git.commit('-m', commit_msg, author=f"{self.git_user_name} <{self.git_user_email}>")
 
         # Push the commit
-        if create_new_branch:
-            repo.git.push('origin', branch, '--set-upstream')
-        else:
+        try:
             repo.git.push('origin', branch)
+        except git.exc.GitCommandError:
+            repo.git.push('origin', branch, '--set-upstream')
 
         return "Files committed and pushed successfully"
