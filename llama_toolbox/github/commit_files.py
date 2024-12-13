@@ -76,8 +76,8 @@ class CommitFiles(BaseTool):
         # repo.config_writer().set_value("user", "name", self.git_user_name).release()
         # repo.config_writer().set_value("user", "email", self.git_user_email).release()
 
-        # os.system(f"git config --global user.name \"{self.git_user_name}\"")
-        # os.system(f"git config --global user.email \"{self.git_user_email}\"")
+        os.system(f"git config --global user.name \"{self.git_user_name}\"")
+        os.system(f"git config --global user.email \"{self.git_user_email}\"")
 
         # Check if the branch has an upstream set
         if branch in repo.heads:
@@ -127,7 +127,7 @@ class CommitFiles(BaseTool):
         # committer = git.Actor(self.git_user_name, self.git_user_email)
         # Commit with a commit message, author, and committer.
         # Commit the files
-        repo.git.commit('-m', commit_msg,author="Bot Test <foo@baz.com>")
+        repo.git.commit('-m', commit_msg,author=f"{self.git_user_name} <{self.git_user_email}>")
 
         # Push the commit
         if create_new_branch:
