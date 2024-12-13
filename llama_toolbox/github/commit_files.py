@@ -66,9 +66,9 @@ class CommitFiles(BaseTool):
         repo = repo_parts[-1]
 
         if repo_url.startswith("https://"):
-            repo_url = repo_url.replace("https://", "https://"+self.git_user_name + ":" + self.api_key+"@")
+            repo_url = repo_url.replace("https://", "https://"+ self.api_key+"@")
         elif repo_url.startswith("github.com"):
-            repo_url = f"https://{self.git_user_name}:{self.api_key}@{repo_url}"
+            repo_url = f"https://{self.api_key}@{repo_url}"
         # Clone the repository
         repo_dir = f"/tmp/{repo}"
 
