@@ -68,9 +68,13 @@ class CommitFiles(BaseTool):
         repo_dir = f"/tmp/{repo}"
         try:
             repo = git.Repo.clone_from(repo_url, repo_dir)
+            repo.config_writer().set_value("user", "name", self.git_user_name).release()
+            repo.config_writer().set_value("user", "email", self.git_user_email).release()
         except git.exc.GitCommandError:
             # If the repository already exists
             repo = git.Repo(repo_dir)
+            repo.config_writer().set_value("user", "name", self.git_user_name).release()
+            repo.config_writer().set_value("user", "email", self.git_user_email).release()
             # Check if the branch has an upstream set
             if repo.heads[branch].tracking_branch() is None:
                 # If not, skip the pull
@@ -111,8 +115,7 @@ class CommitFiles(BaseTool):
                 # Add the files to the commit
         repo.git.add('.')
 
-        repo.config_writer().set_value("user", "name", self.git_user_name).release()
-        repo.config_writer().set_value("user", "email", self.git_user_email).release()
+
         # Commit the files
         repo.git.commit('-m', commit_msg)
 
