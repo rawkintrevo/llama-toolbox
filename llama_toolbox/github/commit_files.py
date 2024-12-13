@@ -73,8 +73,11 @@ class CommitFiles(BaseTool):
             repo = git.Repo(repo_dir)
         else:
             repo = git.Repo.clone_from(repo_url, repo_dir)
-        repo.config_writer().set_value("user", "name", self.git_user_name).release()
-        repo.config_writer().set_value("user", "email", self.git_user_email).release()
+        # repo.config_writer().set_value("user", "name", self.git_user_name).release()
+        # repo.config_writer().set_value("user", "email", self.git_user_email).release()
+
+        os.system(f"git config --global user.name \"{self.git_user_name}\"")
+        os.system(f"git config --global user.email \"{self.git_user_email}\"")
 
         # Check if the branch has an upstream set
         if branch in repo.heads:
