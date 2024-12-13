@@ -108,7 +108,7 @@ class CommitFiles(BaseTool):
 
         origin = repo.remotes.origin
         origin.push(branch)
-
+        return "Files committed and pushed successfully"
         # # Push the commit
         # if branch in repo.heads:
         #     if repo.heads[branch].tracking_branch() is not None:
