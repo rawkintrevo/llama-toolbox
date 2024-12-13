@@ -105,9 +105,11 @@ class CommitFiles(BaseTool):
         repo.git.commit('-m', commit_msg, author=f"{self.git_user_name} <{self.git_user_email}>")
 
         # Push the commit
-        try:
-            repo.git.push('origin', branch)
-        except git.exc.GitCommandError:
+        if branch in repo.heads:
+            if repo.heads['branch'].tracking_branch() is not None:
+                repo.git.push()
+                return "Files committed and pushed successfully"
+        else:
             repo.git.push('origin', branch, '--set-upstream')
+            return "New branch created and files committed and pushed successfully"
 
-        return "Files committed and pushed successfully"
