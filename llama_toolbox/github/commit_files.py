@@ -122,9 +122,9 @@ class CommitFiles(BaseTool):
             code = file['code']
             with open(f"{repo_dir}/{file_path}", 'w') as f:
                 f.write(code)
-
+            repo.get.add(f"{repo_dir}/{file_path}")
                 # Add the files to the commit
-        repo.git.add('.')
+        # repo.git.add('.')
 
 
         # author = git.Actor("Bot Test", "bot@test.com")
