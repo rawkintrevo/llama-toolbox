@@ -107,8 +107,12 @@ class CommitFiles(BaseTool):
         # Push the commit
         if branch in repo.heads:
             if repo.heads[branch].tracking_branch() is not None:
-                repo.git.push()
+                repo.git.push('origin', branch)
                 return "Files committed and pushed successfully"
+            else:
+                repo.git.branch('--set-upstream-to', f"origin/{branch}", branch)
+                repo.git.push('origin', branch)
+                return "Files committed and pushed successfully, and branch set to track origin"
         else:
             repo.git.push('origin', branch, '--set-upstream')
             return "New branch created and files committed and pushed successfully"
