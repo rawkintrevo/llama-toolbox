@@ -4,6 +4,8 @@ import os
 import requests
 import json
 import git
+from pathlib import Path
+
 from..base import BaseTool
 
 class CommitFiles(BaseTool):
@@ -98,22 +100,25 @@ class CommitFiles(BaseTool):
             code = file['code']
             with open(f"{repo_dir}/{file_path}", 'w') as f:
                 f.write(code)
-            repo.git.add(file_path)
+            repo.index.add(Path(file_path))
 
         # Commit with a commit message, author, and committer.
         # Commit the files
-        repo.git.commit('-m', commit_msg, author=f"{self.git_user_name} <{self.git_user_email}>")
+        repo.index.commit(commit_msg)
 
-        # Push the commit
-        if branch in repo.heads:
-            if repo.heads[branch].tracking_branch() is not None:
-                repo.git.push('origin', branch)
-                return "Files committed and pushed successfully"
-            else:
-                repo.git.branch('--set-upstream-to', f"origin/{branch}", branch)
-                repo.git.push('origin', branch)
-                return "Files committed and pushed successfully, and branch set to track origin"
-        else:
-            repo.git.push('origin', branch, '--set-upstream')
-            return "New branch created and files committed and pushed successfully"
+        origin = repo.remotes.origin
+        origin.push(branch)
 
+        # # Push the commit
+        # if branch in repo.heads:
+        #     if repo.heads[branch].tracking_branch() is not None:
+        #         repo.git.push('origin', branch)
+        #         return "Files committed and pushed successfully"
+        #     else:
+        #         repo.git.branch('--set-upstream-to', f"origin/{branch}", branch)
+        #         repo.git.push('origin', branch)
+        #         return "Files committed and pushed successfully, and branch set to track origin"
+        # else:
+        #     repo.git.push('origin', branch, '--set-upstream')
+        #     return "New branch created and files committed and pushed successfully"
+        #
