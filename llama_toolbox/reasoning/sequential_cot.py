@@ -47,7 +47,8 @@ class SequentialCoT(ReasoningTool):
         )
 
         try:
-            steps = json.loads(response.choices[0].message.content)["steps"]
+            # steps = json.loads(response.choices[0].message.content)["steps"]
+            steps = response.choices[0].message.content
             return steps
         except json.JSONDecodeError:
             return {"error": "Failed to decode the response as JSON."}
