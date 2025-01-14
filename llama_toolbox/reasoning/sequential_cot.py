@@ -1,6 +1,6 @@
 import json
 from openai import OpenAI
-from llama_toolbox.reasoning.base import ReasoningTool, process_tool_calls
+from llama_toolbox.reasoning.base import ReasoningTool
 
 class SequentialCoT(ReasoningTool):
     def __init__(self, api_key=None,
