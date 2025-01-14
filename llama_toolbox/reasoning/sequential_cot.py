@@ -61,7 +61,7 @@ response should be a properly formatted json with one field `steps` which contai
         try:
             steps = json.loads(response.choices[0].message.content)["steps"]
             step_output = []
-            for i in range(steps):
+            for i in range(len(steps)):
                 print(f"thinking about '{steps[i]}'...")
                 messages.append({'role': 'user', 'content': steps[i]})
                 response = self.openai_like_client.chat.completions.create(
