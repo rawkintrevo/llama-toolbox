@@ -1,7 +1,5 @@
 from .sequential_cot import SequentialCoT
-
-from llama_toolbox.basic_math.complex import process_tool_calls
-
+from .base import process_tool_calls
 import json
 
 def complex_response(prompt: str,
@@ -56,4 +54,4 @@ def complex_response(prompt: str,
         response = out['response']
 
     messages.append({ 'role' : 'assistant', 'content' : response.choices[0].message.content})
-    return {'messages': messages, 'last_response': response}
+    return {'messages': messages, 'last_response': response}  
