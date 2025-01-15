@@ -56,6 +56,7 @@ response should be a properly formatted json with one field `steps` which contai
                 response = self.get_response(level= 1, messages= messages)
                 step_output.append(response.choices[0].message.content)
                 messages.append({'role': 'assistant', 'content': response.choices[0].message.content})
+            messages.append({'role': 'user', 'content': self.depth_chart[2]})
             response = self.get_response(level = 2, messages= messages)
             return response
         except json.JSONDecodeError:
