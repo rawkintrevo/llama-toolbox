@@ -29,6 +29,7 @@ def complex_response(prompt: str,
     continue_loop = True
     while continue_loop:
         thoughts += 1
+        print('in the loop')
         tool_calls = response.choices[0].message.tool_calls
         messages.append(response.choices[0].message)
         out = process_tool_calls(tool_calls,
@@ -40,6 +41,10 @@ def complex_response(prompt: str,
         response = out['response']
         if (response.choices[0].message.content is None) and (thoughts < max_thoughts):
             continue_loop= True
+            print('staying in the loop')
+        else:
+            print('exit loop')
+            continue_loop = False
 
     messages.append({ 'role' : 'assistant', 'content' : response.choices[0].message.content})
     return {'messages': messages, 'last_response': response}
