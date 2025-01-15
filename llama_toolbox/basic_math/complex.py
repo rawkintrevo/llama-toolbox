@@ -124,7 +124,7 @@ def process_tool_calls(tool_calls, tool_map, messages, tool_desc_list, openai_li
         response = openai_like_client.chat.completions.create(
             model="meta-llama/Llama-3.3-70B-Instruct",
             messages=messages,
-            tools=tool_desc_list,
+            # tools=tool_desc_list,
             tool_choice="auto",
         )
     return {"messages": messages, "response": response}
