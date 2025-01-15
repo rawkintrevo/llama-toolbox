@@ -3,19 +3,10 @@ from openai import OpenAI
 from llama_toolbox.reasoning.base import ReasoningTool
 
 class SequentialCoT(ReasoningTool):
-    def __init__(self, api_key=None,
-                 model_name="Qwen/Qwen2.5-72B-Instruct",
-                 temperature=0.3,
-                 base_url="https://api.deepinfra.com/v1/openai",
-                 steps = 3,
-                 max_thoughts=5):
-        super().__init__(api_key, model_name, temperature, max_thoughts)
-        self.openai_like_client = OpenAI(
-            api_key=api_key,
-            base_url=base_url
-        )
+    def __init__(self, depth_chart, steps):
+        super().__init__(depth_chart= depth_chart)
         self.name = "sequential_cot"
-        self.steps = 3
+        self.steps = steps
 
     @property
     def definition(self):
@@ -49,12 +40,7 @@ response should be a properly formatted json with one field `steps` which contai
 
         messages = [{"role": "user", "content": modified_prompt}]
 
-        response = self.openai_like_client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=self.temperature
-        )
-
+        response = self.get_response(level= 0 , messages= messages)
         messages= [
             {'role': 'user', 'content': prompt},
             {'role' : 'assistant', 'content':response.choices[0].message.content}
@@ -66,14 +52,12 @@ response should be a properly formatted json with one field `steps` which contai
             for i in range(len(steps)):
                 print(f"thinking about Step {i+1}/{len(steps)}:'{steps[i]}'...")
                 messages.append({'role': 'user', 'content': steps[i]})
-                response = self.openai_like_client.chat.completions.create(
-                    model=self.model_name,
-                    messages=messages,
-                    temperature=self.temperature
-                )
+
+                response = self.get_response(level= 1, messages= messages)
                 step_output.append(response.choices[0].message.content)
                 messages.append({'role': 'assistant', 'content': response.choices[0].message.content})
-            return "\n".join(step_output)
+            response = self.get_response(level = 2, messages= messages)
+            return response
         except json.JSONDecodeError:
             return {"error": "Failed to decode the response as JSON."}
 
