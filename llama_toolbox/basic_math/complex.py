@@ -60,6 +60,7 @@ def process_tool_call(tool_call, tool_map, messages, return_type="string"):
         for key, value in function_args.items():
             if isinstance(value, dict) and 'function' in value and 'arguments' in value['function']:
                 # Recursively process the nested function call
+                print('nested fn call.')
                 nested_tool_call = {
                     'id': tool_call['id'],
                     'function': value['function'],
@@ -112,7 +113,10 @@ def process_tool_calls(tool_calls, tool_map, messages, tool_desc_list, openai_li
     - openai_like_client: The client used to make LLM calls.
     - return_type (str): The expected return type ("string" or "json").
     """
+    counter =0
     for tool_call in tool_calls:
+        counter +=1
+        print(f"calling tool {counter} of {len(tool_calls)}")
         messages = process_tool_call(tool_call, tool_map, messages, return_type)
         response = openai_like_client.chat.completions.create(
             model="meta-llama/Llama-3.3-70B-Instruct",
