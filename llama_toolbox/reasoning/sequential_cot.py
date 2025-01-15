@@ -7,6 +7,7 @@ class SequentialCoT(ReasoningTool):
                  model_name="Qwen/Qwen2.5-72B-Instruct",
                  temperature=0.3,
                  base_url="https://api.deepinfra.com/v1/openai",
+                 steps = 3,
                  max_thoughts=5):
         super().__init__(api_key, model_name, temperature, max_thoughts)
         self.openai_like_client = OpenAI(
@@ -14,6 +15,7 @@ class SequentialCoT(ReasoningTool):
             base_url=base_url
         )
         self.name = "sequential_cot"
+        self.steps = 3
 
     @property
     def definition(self):
@@ -36,9 +38,9 @@ class SequentialCoT(ReasoningTool):
         }
 
     def fn(self, prompt):
-        modified_prompt = prompt + """
+        modified_prompt = prompt + f"""
         
-Given the prompt above, return a series of steps required to arrive at an answer. 
+Given the prompt above, return a series of {self.steps} steps required to arrive at an answer. 
 Do not attempt to compute the answer now, only return the series of steps 
 required to solve the problem, as a series of prompts to future LLM calls. Your 
 response should be a properly formatted json with one field `steps` which contains
@@ -62,7 +64,7 @@ response should be a properly formatted json with one field `steps` which contai
             steps = json.loads(response.choices[0].message.content)["steps"]
             step_output = []
             for i in range(len(steps)):
-                print(f"thinking about Step[{i}:'{steps[i]}'...")
+                print(f"thinking about Step {i+1}/{len(steps)}:'{steps[i]}'...")
                 messages.append({'role': 'user', 'content': steps[i]})
                 response = self.openai_like_client.chat.completions.create(
                     model=self.model_name,

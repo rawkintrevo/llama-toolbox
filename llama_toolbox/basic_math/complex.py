@@ -26,9 +26,9 @@ def complex_response(prompt: str,
         temperature=temperature
     )
     thoughts = 1
-    while (response.choices[0].message.content is None) and (thoughts < max_thoughts):
+    continue_loop = True
+    while continue_loop:
         thoughts += 1
-        print('thinking...')
         tool_calls = response.choices[0].message.tool_calls
         messages.append(response.choices[0].message)
         out = process_tool_calls(tool_calls,
@@ -38,6 +38,8 @@ def complex_response(prompt: str,
                                  openai_like_client)
         messages = out['messages']
         response = out['response']
+        if (response.choices[0].message.content is None) and (thoughts < max_thoughts):
+            continue_loop= True
 
     messages.append({ 'role' : 'assistant', 'content' : response.choices[0].message.content})
     return {'messages': messages, 'last_response': response}
@@ -78,9 +80,9 @@ def process_tool_call(tool_call, tool_map, messages, return_type="string"):
                         }
                         function_args[key][i] = process_tool_call(nested_tool_call, tool_map, messages, return_type)
 
-                        # Process the function call with the updated arguments
+        # Process the function call with the updated arguments
         function_response = tool_map[function_name](**function_args)
-
+        print('function responded')
         # Handle the return type
         if return_type == "json":
             try:
@@ -118,6 +120,7 @@ def process_tool_calls(tool_calls, tool_map, messages, tool_desc_list, openai_li
         counter +=1
         print(f"calling tool {counter} of {len(tool_calls)}")
         messages = process_tool_call(tool_call, tool_map, messages, return_type)
+        print('calling final response')
         response = openai_like_client.chat.completions.create(
             model="meta-llama/Llama-3.3-70B-Instruct",
             messages=messages,
