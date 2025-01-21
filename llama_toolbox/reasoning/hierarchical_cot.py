@@ -244,9 +244,27 @@ class HierarchicalCoT(ReasoningTool):
                 "node": node.get('title')[:100] if 'title' in node else str(node)[:100]
             })
             raise
-        
+
     def get_debug_info(self):
         return {
             "error_context": self.error_context,
             "depth_chart_config": self.depth_chart
         }
+
+    def to_markdown(self, output):
+        def _to_markdown(node, level=1):
+            markdown = ""
+
+            if 'title' in node:
+                title = node['title']
+                markdown += f"{'#' * level} {title}\n\n"
+
+            if 'content' in node:
+                markdown += f"{node['content']}\n\n"
+
+            if 'sections' in node:
+                for section in node['sections']:
+                    markdown += _to_markdown(section, level + 1)
+
+            return markdown
+        return _to_markdown(output)
