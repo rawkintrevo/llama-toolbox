@@ -61,9 +61,12 @@ class HierarchicalCoT(ReasoningTool):
         try:
             outline_prompt = f"""Organize this problem into a {depth}-level hierarchical structure:  
             {prompt}  
-              
-            Return JSON format with keys 'title' and 'sections' (array of section objects).   
-            Each section should have 'title' and 'subsections' (if depth > 1)."""
+            
+            Your output should be a properly foratted JSON only. No preamble, explanations, or markdown ticks (```). 
+            Return JSON format with keys 'title' and 'sections' (array of section objects). 
+            """
+            if depth > 1:
+                outline_prompt += "Each section should have 'title' and 'subsections'. "
 
             messages = [{"role": "user", "content": outline_prompt}]
             response = self.get_response(level=0, messages=messages)
