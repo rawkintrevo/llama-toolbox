@@ -62,7 +62,7 @@ class HierarchicalCoT(ReasoningTool):
             outline_prompt = f"""Organize this problem into a {depth}-level hierarchical structure:  
             {prompt}  
             
-            Your output should be a properly foratted JSON only. No preamble, explanations, or markdown ticks (```). 
+            Your output should be a properly formatted JSON only. No preamble, explanations, or markdown ticks (```). 
             Return JSON format with keys 'title' and 'sections' (array of section objects). 
             """
             if depth > 1:
@@ -139,7 +139,8 @@ class HierarchicalCoT(ReasoningTool):
 
                     expansion_prompt = f"""Expand this section: {section['title']}  
                     Current depth: {current_depth}/{max_depth}  
-                    Provide detailed sub-sections in JSON format with 'title' and 'sections'."""
+                    Provide detailed sub-sections in JSON format with 'title' and 'sections'.
+                    Your output should be a properly formatted JSON only. No preamble, explanations, or markdown ticks (```). """
 
                     try:
                         response = client.chat.completions.create(
