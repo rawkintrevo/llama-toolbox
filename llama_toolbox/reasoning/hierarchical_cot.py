@@ -66,7 +66,7 @@ class HierarchicalCoT(ReasoningTool):
             Return JSON format with keys 'title' and 'sections' (array of section objects). 
             """
             if depth > 1:
-                outline_prompt += "Each section should have 'title' and 'subsections'. "
+                outline_prompt += "Each section should have 'title' and 'sections'. "
 
             messages = [{"role": "user", "content": outline_prompt}]
             response = self.get_response(level=0, messages=messages)
