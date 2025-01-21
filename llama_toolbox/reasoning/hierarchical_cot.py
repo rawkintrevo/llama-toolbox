@@ -1,4 +1,4 @@
-# llama_toolbox/reasoning/hierarchical_cot.py  
+# llama_toolbox/reasoning/hierarchical_cot.py
 import json
 import logging
 from openai import OpenAI, APIError
@@ -124,7 +124,6 @@ class HierarchicalCoT(ReasoningTool):
         if path is None:
             path = []
 
-            # Create current section path
         current_path = path + [node.get('title', 'Untitled Section')]
 
         if current_depth >= max_depth:
@@ -146,14 +145,27 @@ class HierarchicalCoT(ReasoningTool):
                 for i, section in enumerate(node['sections']):
                     logger.debug(f"Expanding section {i+1}/{len(node['sections'])} at depth {current_depth}")
 
-                    # Include hierarchical context in prompt
-                    expansion_prompt = f"""Expand this section within the context of: {" -> ".join(current_path)}  
-  
-                    Section to expand: {section['title']}    
-                    Current depth: {current_depth}/{max_depth}    
-  
-                    Provide detailed sub-sections in JSON format with 'title' and 'sections'.  
-                    Your output should be a properly formatted JSON only. No preamble, explanations, or markdown ticks (```). """
+                    next_depth = current_depth + 1
+                    is_final_depth = next_depth == max_depth
+
+                    # Generate appropriate prompt based on depth
+                    if is_final_depth:
+                        expansion_prompt = f"""Expand this section within the context of: {" -> ".join(current_path)}    
+                          
+                        Section to expand: {section['title']}      
+                        Current depth: {current_depth}/{max_depth}      
+                          
+                        Provide detailed content for this section. The content should be a concise explanation.  
+                        Your output should be a properly formatted JSON only with a 'content' field.   
+                        No preamble, explanations, or markdown ticks (```). """
+                    else:
+                        expansion_prompt = f"""Expand this section within the context of: {" -> ".join(current_path)}    
+                          
+                        Section to expand: {section['title']}      
+                        Current depth: {current_depth}/{max_depth}      
+                          
+                        Provide detailed sub-sections in JSON format with 'title' and 'sections'.    
+                        Your output should be a properly formatted JSON only. No preamble, explanations, or markdown ticks (```). """
 
                     try:
                         response = client.chat.completions.create(
@@ -191,22 +203,36 @@ class HierarchicalCoT(ReasoningTool):
                         })
                         continue
 
-                        # Validate section structure
-                    if not isinstance(expanded_section, dict) or 'title' not in expanded_section:
-                        self.error_context.append({
-                            "stage": f"section_validation_depth_{current_depth}",
-                            "section_index": i,
-                            "response_structure": type(expanded_section).__name__
-                        })
-                        continue
+                        # Handle content generation for final depth
+                    if is_final_depth:
+                        if 'content' not in expanded_section:
+                            self.error_context.append({
+                                "stage": f"content_validation_depth_{current_depth}",
+                                "section_index": i,
+                                "response": expanded_section
+                            })
+                            continue
 
-                        # Recursively expand with updated path
-                    expanded['sections'][i] = self._expand_sections(
-                        expanded_section,
-                        current_depth + 1,
-                        max_depth,
-                        current_path  # Pass updated hierarchical path
-                    )
+                            # Update section with content and remove subsections
+                        expanded['sections'][i]['content'] = expanded_section['content']
+                        if 'sections' in expanded['sections'][i]:
+                            del expanded['sections'][i]['sections']
+                    else:
+                        # Validate section structure and recursively expand
+                        if not isinstance(expanded_section, dict) or 'title' not in expanded_section:
+                            self.error_context.append({
+                                "stage": f"section_validation_depth_{current_depth}",
+                                "section_index": i,
+                                "response_structure": type(expanded_section).__name__
+                            })
+                            continue
+
+                        expanded['sections'][i] = self._expand_sections(
+                            expanded_section,
+                            next_depth,
+                            max_depth,
+                            current_path
+                        )
 
             return expanded
 
@@ -218,9 +244,9 @@ class HierarchicalCoT(ReasoningTool):
                 "node": node.get('title')[:100] if 'title' in node else str(node)[:100]
             })
             raise
-
+        
     def get_debug_info(self):
         return {
             "error_context": self.error_context,
             "depth_chart_config": self.depth_chart
-        }  
+        }
