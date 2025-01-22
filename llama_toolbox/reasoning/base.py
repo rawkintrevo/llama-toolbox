@@ -19,6 +19,7 @@ class ReasoningTool(BaseTool, ABC):
         super().__init__()
         self.depth_chart = depth_chart
         self.error_context = []
+        self.jsonify_prompt_s = "Your output should be a properly formatted JSON only. No preamble, explanations, or markdown ticks (```)."
 
 
     @abstractmethod

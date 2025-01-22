@@ -53,7 +53,7 @@ class TreeOfThought(ReasoningTool):
                 # Generate initial thought branches
             messages = [{
                 "role": "user",
-                "content": f"Generate {branches} distinct approaches to solve:\n{prompt}"
+                "content": f"Generate {branches} distinct approaches to solve:\n{prompt}\n\n{self.jsonify_prompt_s}"
             }]
 
             response = self._safe_get_response(0, messages, "initial_branch_generation")
@@ -124,7 +124,7 @@ class TreeOfThought(ReasoningTool):
             - score (integer)    
             - strengths (array)    
             - weaknesses (array)    
-            - next_steps (array)"""
+            - next_steps (array)\n\n{self.jsonify_prompt_s}"""
 
             response = self._safe_get_response(1, [{"role": "user", "content": evaluation_prompt}],
                                                f"branch_evaluation_{branch_index}")
@@ -162,7 +162,7 @@ class TreeOfThought(ReasoningTool):
             Strengths: {evaluation.get('strengths', [])}    
             Weaknesses: {evaluation.get('weaknesses', [])}    
               
-            Provide concrete examples and mitigation strategies in JSON format."""
+            Provide concrete examples and mitigation strategies in JSON format.\n\n{self.jsonify_prompt_s}"""
 
             response = self._safe_get_response(2, [{"role": "user", "content": analysis_prompt}],
                                                f"deep_analysis_{branch_index}")
@@ -212,4 +212,4 @@ class TreeOfThought(ReasoningTool):
                 "error_type": type(e).__name__,
                 "message": str(e)
             })
-            return {"error": str(e)}  
+            return {"error": str(e)}
