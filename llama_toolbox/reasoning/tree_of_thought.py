@@ -97,42 +97,42 @@ class TreeOfThought(ReasoningTool):
             }
 
     # Update the _parse_branches method to handle different structures:
-def _parse_branches(self, response):
-    try:
-        content = response.choices[0].message.content
+    def _parse_branches(self, response):
         try:
-            data = json.loads(content)
+            content = response.choices[0].message.content
+            try:
+                data = json.loads(content)
 
-            # Handle case where response is a direct array
-            if isinstance(data, list):
-                return {"branches": data}
+                # Handle case where response is a direct array
+                if isinstance(data, list):
+                    return {"branches": data}
 
-                # Handle case where branches are under different key
-            for key in ['branches', 'approaches', 'solutions']:
-                if key in data and isinstance(data[key], list):
-                    return {"branches": data[key]}
+                    # Handle case where branches are under different key
+                for key in ['branches', 'approaches', 'solutions']:
+                    if key in data and isinstance(data[key], list):
+                        return {"branches": data[key]}
 
-                    # Validate branches structure
-            if not isinstance(data.get('branches', []), list):
-                raise ValueError("Branches should be a list")
+                        # Validate branches structure
+                if not isinstance(data.get('branches', []), list):
+                    raise ValueError("Branches should be a list")
 
-            return data
+                return data
 
-        except json.JSONDecodeError as e:
+            except json.JSONDecodeError as e:
+                self.error_context.append({
+                    "stage": "branch_parsing",
+                    "response": content,
+                    "error": str(e)
+                })
+                return {"error": "Invalid JSON structure in branches"}
+
+        except AttributeError as e:
             self.error_context.append({
-                "stage": "branch_parsing",
-                "response": content,
-                "error": str(e)
+                "stage": "branch_generation",
+                "error_type": "AttributeError",
+                "message": str(e)
             })
-            return {"error": "Invalid JSON structure in branches"}
-
-    except AttributeError as e:
-        self.error_context.append({
-            "stage": "branch_generation",
-            "error_type": "AttributeError",
-            "message": str(e)
-        })
-        return {"error": "Invalid API response structure"}
+            return {"error": "Invalid API response structure"}
 
     def _evaluate_branch(self, branch, depth, branch_index):
         try:
