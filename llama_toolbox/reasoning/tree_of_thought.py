@@ -105,16 +105,34 @@ class TreeOfThought(ReasoningTool):
 
                 # Handle case where response is a direct array
                 if isinstance(data, list):
-                    return {"branches": data}
+                    processed = [{'description': b} if isinstance(b, str) else b for b in data]
+                    return {"branches": processed}
 
-                    # Handle case where branches are under different key
+                    # Handle case where branches are under different keys
                 for key in ['branches', 'approaches', 'solutions']:
                     if key in data and isinstance(data[key], list):
-                        return {"branches": data[key]}
+                        branches = data[key]
+                        processed = []
+                        for b in branches:
+                            if isinstance(b, str):
+                                processed.append({'description': b})
+                            else:
+                                processed.append(b)
+                        return {"branches": processed}
 
                         # Validate branches structure
                 if not isinstance(data.get('branches', []), list):
                     raise ValueError("Branches should be a list")
+
+                    # Process branches to ensure they are dictionaries
+                branches = data.get('branches', [])
+                processed = []
+                for b in branches:
+                    if isinstance(b, str):
+                        processed.append({'description': b})
+                    else:
+                        processed.append(b)
+                data['branches'] = processed
 
                 return data
 
