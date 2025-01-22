@@ -55,7 +55,7 @@ class TreeOfThought(ReasoningTool):
                 "role": "user",
                 "content": f"Generate {branches} distinct approaches to solve:"
                            f"{prompt}"
-                           f"Your output MUST be a JSON object containing a 'branches' key with an array of {branches} approach strings.  
+                           f"Your output MUST be a JSON object containing a 'branches' key with an array of {branches} approach strings."  
                            """Example format: {{"branches": ["Approach 1", "Approach 2"]}}"""
                            f"{self.jsonify_prompt_s}"
             }]
