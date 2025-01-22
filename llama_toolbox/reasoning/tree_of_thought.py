@@ -1,6 +1,9 @@
 import json
-from openai import OpenAI
+import logging
+from openai import OpenAI, APIError
 from .base import ReasoningTool
+
+logger = logging.getLogger(__name__)
 
 class TreeOfThought(ReasoningTool):
     def __init__(self, depth_chart):
@@ -38,58 +41,164 @@ class TreeOfThought(ReasoningTool):
         }
 
     def fn(self, prompt, branches=3, evaluation_depth=2):
-        # Generate initial thought branches
-        messages = [{
-            "role": "user",
-            "content": f"Generate {branches} distinct approaches to solve:\n{prompt}"
-        }]
-
-        response = self.get_response(level=0, messages=messages)
-        branches = self._parse_branches(response.choices[0].message.content)
-
-        # Evaluate and select best branches
-        evaluated = [self._evaluate_branch(b, evaluation_depth) for b in branches]
-        sorted_branches = sorted(evaluated, key=lambda x: x['score'], reverse=True)
-
-        return {
-            "best_branch": sorted_branches[0],
-            "all_branches": sorted_branches
-        }
-
-    def _parse_branches(self, content):
+        self.error_context = []  # Reset error tracking
         try:
-            data = json.loads(content)
-            return data.get('branches', [])
-        except json.JSONDecodeError:
-            return [{"content": content, "score": 0}]
+            if 0 >= len(self.depth_chart):
+                return {"error": "No models configured in depth_chart"}
 
-    def _evaluate_branch(self, branch, depth):
-        evaluation_prompt = f"""Evaluate this solution approach:  
-        {branch}  
-          
-        Provide a score (0-10) and detailed analysis in JSON format with:  
-        - score (integer)  
-        - strengths (array)  
-        - weaknesses (array)  
-        - next_steps (array)"""
+                # Generate initial thought branches
+            messages = [{
+                "role": "user",
+                "content": f"Generate {branches} distinct approaches to solve:\n{prompt}"
+            }]
 
-        messages = [{"role": "user", "content": evaluation_prompt}]
-        response = self.get_response(level=1, messages=messages)
+            response = self._safe_get_response(0, messages, "initial_branch_generation")
+            if "error" in response:
+                return response
 
+            parsed_branches = self._parse_branches(response)
+            if "error" in parsed_branches:
+                return parsed_branches
+
+                # Evaluate and select best branches
+            evaluated = []
+            for i, branch in enumerate(parsed_branches.get('branches', [])):
+                evaluated_branch = self._evaluate_branch(branch, evaluation_depth, branch_index=i)
+                evaluated.append(evaluated_branch)
+
+            sorted_branches = sorted(evaluated, key=lambda x: x.get('score', 0), reverse=True)
+
+            return {
+                "best_branch": sorted_branches[0] if sorted_branches else None,
+                "all_branches": sorted_branches
+            }
+
+        except Exception as e:
+            logger.error(f"Critical failure: {str(e)}", exc_info=True)
+            return {
+                "error": "TreeOfThought processing failed",
+                "context": self.error_context,
+                "exception": str(e)
+            }
+
+    def _parse_branches(self, response):
         try:
-            evaluation = json.loads(response.choices[0].message.content)
+            content = response.choices[0].message.content
+            try:
+                data = json.loads(content)
+                if not isinstance(data.get('branches', []), list):
+                    raise ValueError("Branches should be a list")
+                return data
+            except json.JSONDecodeError as e:
+                self.error_context.append({
+                    "stage": "branch_parsing",
+                    "response": content,
+                    "error": str(e)
+                })
+                return {"error": "Invalid JSON structure in branches"}
+        except AttributeError as e:
+            self.error_context.append({
+                "stage": "branch_generation",
+                "error_type": "AttributeError",
+                "message": str(e)
+            })
+            return {"error": "Invalid API response structure"}
+
+    def _evaluate_branch(self, branch, depth, branch_index):
+        try:
+            evaluation_prompt = f"""Evaluate this solution approach:    
+            {branch}    
+              
+            Provide a score (0-10) and detailed analysis in JSON format with:    
+            - score (integer)    
+            - strengths (array)    
+            - weaknesses (array)    
+            - next_steps (array)"""
+
+            response = self._safe_get_response(1, [{"role": "user", "content": evaluation_prompt}],
+                                               f"branch_evaluation_{branch_index}")
+            if "error" in response:
+                return {**branch, "score": 0, "error": response["error"]}
+
+            try:
+                evaluation = json.loads(response.choices[0].message.content)
+                if not isinstance(evaluation.get('score', 0), int):
+                    raise ValueError("Score must be integer")
+            except (json.JSONDecodeError, ValueError) as e:
+                self.error_context.append({
+                    "stage": f"evaluation_parsing_{branch_index}",
+                    "response": response.choices[0].message.content,
+                    "error": str(e)
+                })
+                evaluation = {"score": 0, "error": str(e)}
+
             if depth > 1:
-                evaluation['deeper_analysis'] = self._deep_analysis(evaluation)
+                evaluation['deeper_analysis'] = self._deep_analysis(evaluation, branch_index)
+
             return {**branch, **evaluation}
-        except json.JSONDecodeError:
+
+        except Exception as e:
+            self.error_context.append({
+                "stage": f"branch_evaluation_{branch_index}",
+                "error_type": type(e).__name__,
+                "message": str(e)
+            })
             return {**branch, "score": 0, "error": "Evaluation failed"}
 
-    def _deep_analysis(self, evaluation):
-        analysis_prompt = f"""Perform deep analysis on:  
-        Strengths: {evaluation.get('strengths', [])}  
-        Weaknesses: {evaluation.get('weaknesses', [])}  
-          
-        Provide concrete examples and mitigation strategies in JSON format."""
+    def _deep_analysis(self, evaluation, branch_index):
+        try:
+            analysis_prompt = f"""Perform deep analysis on:    
+            Strengths: {evaluation.get('strengths', [])}    
+            Weaknesses: {evaluation.get('weaknesses', [])}    
+              
+            Provide concrete examples and mitigation strategies in JSON format."""
 
-        response = self.get_response(level=2, messages=[{"role": "user", "content": analysis_prompt}])
-        return json.loads(response.choices[0].message.content)
+            response = self._safe_get_response(2, [{"role": "user", "content": analysis_prompt}],
+                                               f"deep_analysis_{branch_index}")
+            if "error" in response:
+                return {"error": response["error"]}
+
+            try:
+                return json.loads(response.choices[0].message.content)
+            except json.JSONDecodeError as e:
+                self.error_context.append({
+                    "stage": f"deep_analysis_parsing_{branch_index}",
+                    "response": response.choices[0].message.content,
+                    "error": str(e)
+                })
+                return {"error": "Deep analysis parsing failed"}
+
+        except Exception as e:
+            self.error_context.append({
+                "stage": f"deep_analysis_{branch_index}",
+                "error_type": type(e).__name__,
+                "message": str(e)
+            })
+            return {"error": "Deep analysis failed"}
+
+    def _safe_get_response(self, level, messages, context_stage):
+        try:
+            if level >= len(self.depth_chart):
+                error_msg = f"Level {level} not configured in depth_chart"
+                self.error_context.append({
+                    "stage": context_stage,
+                    "error": error_msg
+                })
+                return {"error": error_msg}
+
+            return self.get_response(level=level, messages=messages)
+        except APIError as e:
+            self.error_context.append({
+                "stage": context_stage,
+                "error_type": "APIError",
+                "status_code": e.status_code,
+                "message": e.message
+            })
+            return {"error": f"API Error: {e.message}"}
+        except Exception as e:
+            self.error_context.append({
+                "stage": context_stage,
+                "error_type": type(e).__name__,
+                "message": str(e)
+            })
+            return {"error": str(e)}  
