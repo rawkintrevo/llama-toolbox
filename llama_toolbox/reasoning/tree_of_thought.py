@@ -44,6 +44,10 @@ class TreeOfThought(ReasoningTool):
         self.error_context = []  # Reset error tracking
         try:
             if 0 >= len(self.depth_chart):
+                self.error_context.append({
+                    "stage": "initialization",
+                    "error": "No models configured in depth_chart"
+                })
                 return {"error": "No models configured in depth_chart"}
 
                 # Generate initial thought branches
@@ -70,15 +74,22 @@ class TreeOfThought(ReasoningTool):
 
             return {
                 "best_branch": sorted_branches[0] if sorted_branches else None,
-                "all_branches": sorted_branches
+                "all_branches": sorted_branches,
+                "debug_info": self.get_debug_info()  # Include debug info in response
             }
 
         except Exception as e:
             logger.error(f"Critical failure: {str(e)}", exc_info=True)
+            self.error_context.append({
+                "stage": "fn_execution",
+                "error_type": type(e).__name__,
+                "message": str(e)
+            })
             return {
                 "error": "TreeOfThought processing failed",
                 "context": self.error_context,
-                "exception": str(e)
+                "exception": str(e),
+                "debug_info": self.get_debug_info()  # Include debug info in error response
             }
 
     def _parse_branches(self, response):

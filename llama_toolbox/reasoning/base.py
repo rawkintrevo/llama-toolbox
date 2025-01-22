@@ -18,6 +18,7 @@ class ReasoningTool(BaseTool, ABC):
                  ):
         super().__init__()
         self.depth_chart = depth_chart
+        self.error_context = []
 
 
     @abstractmethod
@@ -36,3 +37,10 @@ class ReasoningTool(BaseTool, ABC):
             messages=messages,
             temperature=self.depth_chart[level]['temperature']
         )
+
+    def get_debug_info(self):
+        """Get current debugging information"""
+        return {
+            "error_context": self.error_context,
+            "depth_chart_config": self.depth_chart
+        }
