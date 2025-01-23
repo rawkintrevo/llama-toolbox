@@ -52,12 +52,13 @@ class FunctionOrchestrator:
 
                 # Execute function
                 result = tool.fn(**function_args)
-                
+
                 # Store result in context
                 messages.append({
                     "role": "tool",
+                    "tool_call_id": tool_call.id,
                     "content": str(result),#.output,
-                    "name": function_name
+                    # "name": function_name
                 })
 
         return messages
