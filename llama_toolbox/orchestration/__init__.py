@@ -20,9 +20,12 @@ class FunctionOrchestrator:
             response = self.llm.chat.completions.create(
                 model=model_name,
                 messages=messages,
-                functions=self.available_functions
+                tools=self.available_functions
             )
-
+            print("DEBUG: Available functions:")
+            print(self.available_functions)
+            print("\n\nTool Calls:")
+            print(response.choices[0].message.tool_calls)
             # Process function calls
             for tool_call in response.choices[0].message.tool_calls:
                 function_name = tool_call.function.name
