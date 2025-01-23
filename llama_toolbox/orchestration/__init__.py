@@ -6,13 +6,25 @@ from ..config import FunctionRegistry
 
 
 class FunctionOrchestrator:
-    def __init__(self, llm_client):
+    def __init__(self, llm_client, tool_configs=None):
         self.llm = llm_client
         self.available_functions = FunctionRegistry.get_tools()
-        self.function_map = {f['function']['name']: FunctionRegistry._tools[f['function']['name']]
-                             for f in self.available_functions}
+        self.tool_configs = tool_configs or {}
+        self.function_map = self.function_map = self._build_function_map()
         print("Available functions in orchestrator:", ', '.join(
             [f['function']['name'] for f in self.available_functions]))
+
+    def _build_function_map(self):
+        return {
+            func_def['function']['name']: (
+                FunctionRegistry._tools[func_def['function']['name']],
+                self.tool_configs.get(func_def['function']['name'], {})
+            ) for func_def in self.available_functions
+        }
+
+    def _instantiate_tool(self, function_name):
+        tool_class, config = self.function_map[function_name]
+        return tool_class(**config)
 
     def execute_workflow(self, user_query:str, model_name:str, max_steps=5):
         messages = [{"role": "user", "content": user_query}]

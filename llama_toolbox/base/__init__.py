@@ -56,8 +56,15 @@ class WorkflowContext:
         self.execution_log.append(entry)
 
 class BaseTool(ABC):
-    def __init__(self):
-        self.api_key = None
+    def __init__(self, **kwargs):
+        self._load_config()
+        self._configure(**kwargs)
+
+    def _configure(self, **kwargs):
+        """Set instance-specific configurations"""
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
     def _load_config(self):
         """Auto-load config based on tool type"""
