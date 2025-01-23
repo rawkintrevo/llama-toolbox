@@ -11,8 +11,10 @@ class FunctionOrchestrator:
         self.available_functions = FunctionRegistry.get_tools()
         self.function_map = {f['function']['name']: FunctionRegistry._tools[f['function']['name']]
                              for f in self.available_functions}
+        print("Available functions in orchestrator:", ', '.join(
+            [f['function']['name'] for f in self.available_functions]))
 
-    def execute_workflow(self, user_query:str, model_name:str, max_steps=5):
+def execute_workflow(self, user_query:str, model_name:str, max_steps=5):
         messages = [{"role": "user", "content": user_query}]
 
         for _ in range(max_steps):
@@ -22,10 +24,7 @@ class FunctionOrchestrator:
                 messages=messages,
                 tools=self.available_functions
             )
-            print("DEBUG: Available functions:")
-            print(self.available_functions)
-            print("\n\nTool Calls:")
-            print(response.choices[0].message.tool_calls)
+
             # Process function calls
             for tool_call in response.choices[0].message.tool_calls:
                 function_name = tool_call.function.name
@@ -38,7 +37,7 @@ class FunctionOrchestrator:
                 # Store result in context
                 messages.append({
                     "role": "tool",
-                    "content": result.output,
+                    "content": str(result),#.output,
                     "name": function_name
                 })
 
