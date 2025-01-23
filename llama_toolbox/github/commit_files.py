@@ -19,6 +19,7 @@ class CommitFiles(BaseTool):
         self.name = name
         self.git_user_name = git_user_name
         self.git_user_email = git_user_email
+        self.API_SERVICE = 'github'
 
 
     @property

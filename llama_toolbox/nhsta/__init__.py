@@ -10,6 +10,7 @@ class ComplaintsByVehicle(BaseTool):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.API_SERVICE = 'nhtsa'
 
     @property
     def definition(self):

@@ -11,6 +11,7 @@ class CommitFile(BaseTool):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.API_SERVICE = 'github'
 
     @property
     def definition(self):
