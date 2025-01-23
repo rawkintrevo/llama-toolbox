@@ -44,9 +44,15 @@ class FunctionOrchestrator:
                 function_args = json.loads(tool_call.function.arguments)
                 print(f'Calling {function_name}, with args ({function_args})')
                 # Execute function
-                tool = self.function_map[function_name]
-                result = tool.fn(**function_args)
+                # Get tool class and configuration
+                tool_class, config = self.function_map[function_name]
 
+                # Instantiate tool with configuration
+                tool = tool_class(**config)
+
+                # Execute function
+                result = tool.fn(**function_args)
+                
                 # Store result in context
                 messages.append({
                     "role": "tool",
