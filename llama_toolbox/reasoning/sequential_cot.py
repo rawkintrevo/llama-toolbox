@@ -1,7 +1,9 @@
 import json
 from openai import OpenAI
 from llama_toolbox.reasoning.base import ReasoningTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class SequentialCoT(ReasoningTool):
     def __init__(self, depth_chart, steps):
         super().__init__(depth_chart= depth_chart)

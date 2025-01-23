@@ -14,7 +14,7 @@ class FunctionOrchestrator:
         print("Available functions in orchestrator:", ', '.join(
             [f['function']['name'] for f in self.available_functions]))
 
-def execute_workflow(self, user_query:str, model_name:str, max_steps=5):
+    def execute_workflow(self, user_query:str, model_name:str, max_steps=5):
         messages = [{"role": "user", "content": user_query}]
 
         for _ in range(max_steps):
