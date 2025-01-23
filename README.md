@@ -15,7 +15,11 @@
 ## Roadmap  
   
 For a detailed overview of planned features and their current status, please refer to the [ROADMAP](./ROADMAP.md).  
-  
+
+## Documentation
+
+Documentation can be found [here](./docs).
+
 ## Contributing  
   
 We welcome contributions from the community! If you'd like to add a new tool or improve an existing one, please check out our [CONTRIBUTING](./CONTRIBUTING.md) guide for detailed instructions on how to get started.  
