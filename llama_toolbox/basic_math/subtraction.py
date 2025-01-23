@@ -1,5 +1,7 @@
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class Subtraction(BaseTool):
     def __init__(self, name="subtraction"):
         super().__init__()

@@ -1,5 +1,7 @@
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class Division(BaseTool):
     def __init__(self, name="division"):
         super().__init__()

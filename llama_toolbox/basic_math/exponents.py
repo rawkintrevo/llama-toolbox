@@ -1,5 +1,7 @@
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class Exponents(BaseTool):
     def __init__(self, name="exponents"):
         super().__init__()
