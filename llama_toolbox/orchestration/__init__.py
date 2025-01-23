@@ -93,7 +93,7 @@ class FunctionOrchestrator:
         return {
             "conversation": messages,
             "final_answer": final_answer
-        }     
+        }
 
 class ToolChain:
     def __init__(self, tools: List[Any], context: WorkflowContext):
