@@ -40,10 +40,11 @@ class FunctionOrchestrator:
             # Process function calls
             for tool_call in response.choices[0].message.tool_calls:
                 function_name = tool_call.function.name
-                function_args = json.loads(tool_call.function.arguments)
 
+                function_args = json.loads(tool_call.function.arguments)
+                print(f'Calling {function_name}, with args ({function_args})')
                 # Execute function
-                tool = self.function_map[function_name]()
+                tool = self.function_map[function_name]
                 result = tool.fn(**function_args)
 
                 # Store result in context
