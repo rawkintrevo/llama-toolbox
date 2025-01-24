@@ -1,6 +1,8 @@
 import requests
 from ..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class GetRepoContents(BaseTool):
 
     def __init__(self,
@@ -9,6 +11,7 @@ class GetRepoContents(BaseTool):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.API_SERVICE = 'github'
         self.eoi = {'js' : 'javascript',
                     'jsx' : 'javascript',
                     'ts' : 'typescript',

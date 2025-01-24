@@ -1,12 +1,16 @@
 import json
 from openai import OpenAI
 from llama_toolbox.reasoning.base import ReasoningTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class SequentialCoT(ReasoningTool):
-    def __init__(self, depth_chart, steps):
+    def __init__(self, depth_chart= None, steps= 5):
         super().__init__(depth_chart= depth_chart)
         self.name = "sequential_cot"
+        self.depth_chart = depth_chart or []
         self.steps = steps
+
 
     @property
     def definition(self):
@@ -21,17 +25,21 @@ class SequentialCoT(ReasoningTool):
                         "prompt": {
                             "type": "string",
                             "description": "The prompt to generate steps for."
+                        },
+                        "steps" : {
+                            "type": "number",
+                            "description": "How many steps to take. (Default 3)"
                         }
                     },
-                    "required": ["prompt"]
+                    "required": ["prompt", "steps"]
                 }
             }
         }
 
-    def fn(self, prompt):
+    def fn(self, prompt, steps):
         modified_prompt = prompt + f"""
         
-Given the prompt above, return a series of {self.steps} steps required to arrive at an answer. 
+Given the prompt above, return a series of {steps} steps required to arrive at an answer. 
 Do not attempt to compute the answer now, only return the series of steps 
 required to solve the problem, as a series of prompts to future LLM calls. Your 
 response should be a properly formatted json with one field `steps` which contains

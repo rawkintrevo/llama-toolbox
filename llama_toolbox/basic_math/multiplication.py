@@ -1,5 +1,7 @@
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class Multiplication(BaseTool):
     def __init__(self, name="multiplication"):
         super().__init__()

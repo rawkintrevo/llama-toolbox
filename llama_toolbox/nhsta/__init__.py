@@ -2,7 +2,9 @@ from requests import get
 from json import dumps
 
 from ..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class ComplaintsByVehicle(BaseTool):
     def __init__(self,
                  api_key=None,
@@ -10,6 +12,7 @@ class ComplaintsByVehicle(BaseTool):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.API_SERVICE = 'nhtsa'
 
     @property
     def definition(self):

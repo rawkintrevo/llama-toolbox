@@ -1,5 +1,7 @@
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class Addition(BaseTool):
     def __init__(self, name="addition"):
         super().__init__()

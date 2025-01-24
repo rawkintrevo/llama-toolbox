@@ -1,7 +1,9 @@
 # llama_toolbox/arxiv/search.py
 from..base import BaseTool
 import requests
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class Search(BaseTool):
     def __init__(self, name="search"):
         super().__init__()

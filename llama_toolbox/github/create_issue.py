@@ -3,7 +3,9 @@
 from requests import post
 from json import dumps
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class CreateIssue(BaseTool):
     def __init__(self,
                  api_key=None,
@@ -11,6 +13,7 @@ class CreateIssue(BaseTool):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.API_SERVICE = 'github'
 
     @property
     def definition(self):

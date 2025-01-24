@@ -3,12 +3,15 @@
 from..base import BaseTool
 import requests
 import json
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class ReadIssue(BaseTool):
     def __init__(self, api_key=None, name="read_issue"):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.API_SERVICE = 'github'
 
     @property
     def definition(self):

@@ -2,7 +2,9 @@
 
 from..base import BaseTool
 import requests
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class SearchRepos(BaseTool):
     def __init__(self,
                  api_key=None,
@@ -10,6 +12,7 @@ class SearchRepos(BaseTool):
         super().__init__()
         self.api_key = api_key
         self.name = name
+        self.API_SERVICE = 'github'
 
     @property
     def definition(self):

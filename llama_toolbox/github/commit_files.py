@@ -7,7 +7,9 @@ import git
 from pathlib import Path
 
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class CommitFiles(BaseTool):
     def __init__(self,
                  api_key=None,
@@ -19,6 +21,7 @@ class CommitFiles(BaseTool):
         self.name = name
         self.git_user_name = git_user_name
         self.git_user_email = git_user_email
+        self.API_SERVICE = 'github'
 
 
     @property

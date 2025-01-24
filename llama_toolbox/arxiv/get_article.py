@@ -1,7 +1,9 @@
 # llama_toolbox/arxiv/get_article.py
 from..base import BaseTool
 import requests
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class GetArticle(BaseTool):
     def __init__(self, name="get_article"):
         super().__init__()
