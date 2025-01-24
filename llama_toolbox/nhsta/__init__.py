@@ -3,6 +3,9 @@ from json import dumps
 
 from ..base import BaseTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class ComplaintsByVehicle(BaseTool):
@@ -45,6 +48,7 @@ class ComplaintsByVehicle(BaseTool):
     def fn(self, make,
                  model,
                  modelYear)-> str:
+        logger.debug(f"Searching for complaints related to {modelYear} {make} {model}")
         base_url = "https://api.nhtsa.gov/complaints/complaintsByVehicle"
         payload = {
             "make": make,

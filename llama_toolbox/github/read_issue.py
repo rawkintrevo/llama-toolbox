@@ -4,6 +4,9 @@ from..base import BaseTool
 import requests
 import json
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class ReadIssue(BaseTool):
@@ -38,6 +41,7 @@ class ReadIssue(BaseTool):
         }
 
     def fn(self, repo_url, issue_number):
+        logger.debug(f"Reading issue number {issue_number} from repo {repo_url}")
         # Extracting the owner and repo name from the URL
         repo_parts = repo_url.rstrip('/').split('/')
         owner = repo_parts[-2]

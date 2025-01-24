@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict, Any
 import json
-import os
+import logging
 from pathlib import Path
 from ..config import ToolConfig
 
@@ -57,8 +57,10 @@ class WorkflowContext:
 
 class BaseTool(ABC):
     def __init__(self, **kwargs):
+        self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
         self._load_config()
         self._configure(**kwargs)
+        self.logger.debug("Initialized %s tool", self.__class__.__name__)
 
     def _configure(self, **kwargs):
         """Set instance-specific configurations"""

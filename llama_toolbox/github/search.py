@@ -3,6 +3,9 @@
 from..base import BaseTool
 import requests
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class SearchRepos(BaseTool):
@@ -43,6 +46,7 @@ class SearchRepos(BaseTool):
         }
 
     def fn(self, query, page=1, per_page=10) -> str:
+        logger.debug(f"Searching github.com for '{query}'")
         api_url = f"https://api.github.com/search/repositories"
         headers = {
             'Authorization': f'token {self.api_key}'

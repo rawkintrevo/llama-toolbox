@@ -42,6 +42,7 @@ class TreeOfThought(ReasoningTool):
         }
 
     def fn(self, prompt, branches=3, evaluation_depth=2):
+        logger.debug(f"Tree of Thought. {branches} branches. {evaluation_depth} depth.")
         self.error_context = []  # Reset error tracking
         try:
             if 0 >= len(self.depth_chart):

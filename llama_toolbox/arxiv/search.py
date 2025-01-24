@@ -2,6 +2,9 @@
 from..base import BaseTool
 import requests
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class Search(BaseTool):
@@ -75,6 +78,7 @@ class Search(BaseTool):
         return date
 
     def fn(self, query, start=0, max_results=10, submittedDateFrom=None, submittedDateTo=None, ti=None, au=None, abs=None, co=None, jr=None, cat=None):
+        logger.debug("Querying ArXiv for '%s'", query)
         base_url = "http://export.arxiv.org/api/query"
         params = {
             "search_query": query,

@@ -1,5 +1,8 @@
 from..base import BaseTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class Division(BaseTool):
@@ -32,6 +35,7 @@ class Division(BaseTool):
         }
 
     def fn(self, num1, num2):
+        logger.debug(f"Dividing {num1} by {num2}")
         if num2 == 0:
             raise ZeroDivisionError("Cannot divide by zero")
         return num1 / num2  

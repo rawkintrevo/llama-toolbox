@@ -1,5 +1,7 @@
 import os
 from dotenv import load_dotenv
+import logging
+
 
 class ToolConfig:
     _instance = None
@@ -29,3 +31,28 @@ class FunctionRegistry:
     @classmethod
     def get_tools(cls):
         return [cls._tools[name]().definition for name in cls._tools]
+
+def setup_logging():
+    """Configure logging for the llama-toolbox package."""
+    logger = logging.getLogger('llama_toolbox')
+    log_level = os.getenv('LLAMA_TOOLBOX_LOG_LEVEL', 'WARNING').upper()
+    level = getattr(logging, log_level, logging.WARNING)
+
+    # Clear existing handlers if any
+    if logger.handlers:
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+
+            # Configure new handler
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    logger.setLevel(level)
+    logger.propagate = False
+
+# Initialize logging when config is imported
+setup_logging()
