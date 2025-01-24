@@ -3,7 +3,9 @@
 from requests import post
 from json import dumps
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class CreateIssue(BaseTool):
     def __init__(self,
                  api_key=None,

@@ -3,9 +3,11 @@ import json
 import logging
 from openai import OpenAI, APIError
 from.base import ReasoningTool
+from ..config import FunctionRegistry
 
 logger = logging.getLogger(__name__)
 
+@FunctionRegistry.register
 class HierarchicalCoT(ReasoningTool):
     def __init__(self, depth_chart):
         super().__init__(depth_chart=depth_chart)

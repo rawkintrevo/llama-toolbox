@@ -5,6 +5,7 @@ from .base import ReasoningTool
 
 logger = logging.getLogger(__name__)
 
+@FunctionRegistry.register
 class TreeOfThought(ReasoningTool):
     def __init__(self, depth_chart):
         super().__init__(depth_chart=depth_chart)

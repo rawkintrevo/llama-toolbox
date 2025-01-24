@@ -2,7 +2,9 @@ from requests import get
 from json import dumps
 
 from ..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class ComplaintsByVehicle(BaseTool):
     def __init__(self,
                  api_key=None,

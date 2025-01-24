@@ -3,7 +3,9 @@ import requests
 import json
 
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class CommitFile(BaseTool):
     def __init__(self,
                  api_key=None,

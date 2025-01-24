@@ -1,6 +1,8 @@
 import requests
 from ..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class GetRepoContents(BaseTool):
 
     def __init__(self,

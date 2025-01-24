@@ -7,7 +7,9 @@ import git
 from pathlib import Path
 
 from..base import BaseTool
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class CommitFiles(BaseTool):
     def __init__(self,
                  api_key=None,

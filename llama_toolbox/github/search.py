@@ -2,7 +2,9 @@
 
 from..base import BaseTool
 import requests
+from ..config import FunctionRegistry
 
+@FunctionRegistry.register
 class SearchRepos(BaseTool):
     def __init__(self,
                  api_key=None,
