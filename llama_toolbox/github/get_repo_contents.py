@@ -1,6 +1,9 @@
 import requests
 from ..base import BaseTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class GetRepoContents(BaseTool):
@@ -56,6 +59,7 @@ class GetRepoContents(BaseTool):
     def fn(self, repo_url,
            directory_path = "/",
            eoi = None)-> str:
+        logger.debug(f"Getting contents of repo {repo_url}")
         if eoi is None:
             eoi = self.eoi
         # Extracting the owner and repo name from the URL

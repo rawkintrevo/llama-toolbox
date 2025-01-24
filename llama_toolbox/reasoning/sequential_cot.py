@@ -2,6 +2,9 @@ import json
 from openai import OpenAI
 from llama_toolbox.reasoning.base import ReasoningTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class SequentialCoT(ReasoningTool):
@@ -37,6 +40,7 @@ class SequentialCoT(ReasoningTool):
         }
 
     def fn(self, prompt, steps):
+        logger.debug(f"Starting SequentialCoT with {steps} steps")
         modified_prompt = prompt + f"""
         
 Given the prompt above, return a series of {steps} steps required to arrive at an answer. 
@@ -58,14 +62,14 @@ response should be a properly formatted json with one field `steps` which contai
             steps = json.loads(response.choices[0].message.content)["steps"]
             step_output = []
             for i in range(len(steps)):
-                print(f"thinking about Step {i+1}/{len(steps)}:'{steps[i]}'...")
+                logger.debug(f"Executing Step {i+1}/{len(steps)}:'{steps[i]}'...")
                 messages.append({'role': 'user', 'content': steps[i]})
 
                 response = self.get_response(level= 1, messages= messages)
                 step_output.append(response.choices[0].message.content)
                 messages.append({'role': 'assistant', 'content': response.choices[0].message.content})
             messages.append({'role': 'user', 'content': self.depth_chart[2]['prompt_appendix']})
-            print('thinking about how it all fits together')
+            logger.debug('Synthesizing Response')
             response = self.get_response(level = 2, messages= messages)
             return response
         except json.JSONDecodeError:

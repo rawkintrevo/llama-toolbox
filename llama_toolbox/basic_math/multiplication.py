@@ -1,5 +1,8 @@
 from..base import BaseTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class Multiplication(BaseTool):
@@ -32,4 +35,5 @@ class Multiplication(BaseTool):
         }
 
     def fn(self, num1, num2):
+        logger.debug(f"Multiplying {num1} by {num2}")
         return num1 * num2

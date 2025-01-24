@@ -9,9 +9,10 @@ logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class HierarchicalCoT(ReasoningTool):
-    def __init__(self, depth_chart):
+    def __init__(self, depth_chart= None):
         super().__init__(depth_chart=depth_chart)
         self.name = "hierarchical_cot"
+        self.depth_chart = depth_chart or []
         self.error_context = []  # Track error locations
 
     @property

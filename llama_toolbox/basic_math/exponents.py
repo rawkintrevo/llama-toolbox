@@ -1,5 +1,8 @@
 from..base import BaseTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class Exponents(BaseTool):
@@ -32,4 +35,5 @@ class Exponents(BaseTool):
         }
 
     def fn(self, base, power):
+        logger.debug(f"Raising {base} to the {power}th power")
         return base ** power

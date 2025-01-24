@@ -2,14 +2,16 @@ import json
 import logging
 from openai import OpenAI, APIError
 from .base import ReasoningTool
+from ..config import FunctionRegistry
 
 logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class TreeOfThought(ReasoningTool):
-    def __init__(self, depth_chart):
+    def __init__(self, depth_chart= None):
         super().__init__(depth_chart=depth_chart)
         self.name = "tree_of_thought"
+        self.depth_chart = depth_chart or []
 
     @property
     def definition(self):
@@ -42,6 +44,7 @@ class TreeOfThought(ReasoningTool):
         }
 
     def fn(self, prompt, branches=3, evaluation_depth=2):
+        logger.debug(f"Tree of Thought. {branches} branches. {evaluation_depth} depth.")
         self.error_context = []  # Reset error tracking
         try:
             if 0 >= len(self.depth_chart):

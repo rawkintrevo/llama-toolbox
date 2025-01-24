@@ -1,5 +1,8 @@
 from..base import BaseTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class Subtraction(BaseTool):
@@ -32,4 +35,5 @@ class Subtraction(BaseTool):
         }
 
     def fn(self, num1, num2):
+        logger.debug(f"Subtracting {num2} from {num1}")
         return num1 - num2

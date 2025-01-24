@@ -2,6 +2,9 @@
 from..base import BaseTool
 import requests
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class GetArticle(BaseTool):
@@ -30,6 +33,7 @@ class GetArticle(BaseTool):
         }
 
     def fn(self, id):
+        logger.debug("Fetching Article '%s' from ArXiv", id)
         base_url = "http://export.arxiv.org/api/query"
         params = {
             "id_list": id

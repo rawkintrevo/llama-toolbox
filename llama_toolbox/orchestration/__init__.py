@@ -3,15 +3,18 @@ import time
 from typing import List, Dict, Any
 from ..base import WorkflowContext, ToolResult
 from ..config import FunctionRegistry
+import logging
 
+logger = logging.getLogger(__name__)
 
 class FunctionOrchestrator:
     def __init__(self, llm_client, tool_configs=None):
+        self.logger = logging.getLogger(f"{__name__}.FunctionOrchestrator")
         self.llm = llm_client
         self.available_functions = FunctionRegistry.get_tools()
         self.tool_configs = tool_configs or {}
         self.function_map = self.function_map = self._build_function_map()
-        print("Available functions in orchestrator:", ', '.join(
+        self.logger.debug("Available functions in orchestrator: " + ', '.join(
             [f['function']['name'] for f in self.available_functions]))
 
     def _build_function_map(self):
@@ -27,6 +30,7 @@ class FunctionOrchestrator:
         return tool_class(**config)
 
     def execute_workflow(self, user_query: str, model_name: str, max_steps=5):
+        self.logger.debug("Starting workflow execution with query: %s", user_query)
         messages = [{"role": "user", "content": user_query}]
         final_answer = None
 
@@ -51,7 +55,7 @@ class FunctionOrchestrator:
                     function_name = tool_call.function.name
 
                     function_args = json.loads(tool_call.function.arguments)
-                    print(f'Calling {function_name}, with args ({function_args})')
+
                     # Execute function
                     # Get tool class and configuration
                     tool_class, config = self.function_map[function_name]

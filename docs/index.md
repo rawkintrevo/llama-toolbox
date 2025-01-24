@@ -6,7 +6,11 @@ The LLaMA Toolbox is designed to provide a flexible and extensible framework for
   
 ## Getting Started  
 To get started with the LLaMA Toolbox, please see the [CONTRIBUTING](../CONTRIBUTING.html) guide for information on how to contribute to the project.  
-  
+
+## Logging
+
+See [LOGGING.md](LOGGING.md)
+
 ## APIs  
 The LLaMA Toolbox provides a range of APIs for working with LLaMA models. These APIs are organized into several categories, including:  
   

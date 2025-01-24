@@ -8,6 +8,9 @@ from pathlib import Path
 
 from..base import BaseTool
 from ..config import FunctionRegistry
+import logging
+
+logger = logging.getLogger(__name__)
 
 @FunctionRegistry.register
 class CommitFiles(BaseTool):
@@ -61,6 +64,7 @@ class CommitFiles(BaseTool):
         }
 
     def fn(self, repo_url, branch, commit_msg, files_json, base_branch='main'):
+        logger.debug(f"Committing files to {repo_url}")
         # Extracting the owner and repo name from the URL
         repo_parts = repo_url.rstrip('/').split('/')
         owner = repo_parts[-2]
