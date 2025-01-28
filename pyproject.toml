@@ -11,9 +11,7 @@ packages = [{include = "llama_toolbox"}]
 python = "^3.10"
 GitPython = "^3.1.43"
 python-dotenv = "^1.0.1"
-
-[tool.poetry.extras]
-testing = ["pytest"]
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core"]
