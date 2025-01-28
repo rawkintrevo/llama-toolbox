@@ -1,5 +1,24 @@
 import pytest
+from os import getenv
 from llama_toolbox.reasoning import HierarchicalCoT, SequentialCoT, TreeOfThought
+depth_chart = [
+    {'model_name' : "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+     'base_url' : "https://api.deepinfra.com/v1/openai",
+     'api_key' : getenv("DEEPINFRA_TOKEN"),
+     'temperature' : 0.3,
+     'prompt_appendix' : 'This isnt used at level 0.'
+     },
+    {'model_name' : "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+     'base_url' : "https://api.deepinfra.com/v1/openai",
+     'api_key' : getenv("DEEPINFRA_TOKEN"),
+     'temperature' : 0.3,
+     },
+    {'model_name' : "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+     'base_url' : "https://api.deepinfra.com/v1/openai",
+     'api_key' : getenv("DEEPINFRA_TOKEN"),
+     'temperature' : 0.3,
+     }
+]
 
 def test_hierarchical_cot():
     hierarchical_cot = HierarchicalCoT()
