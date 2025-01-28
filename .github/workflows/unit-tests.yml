@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  unit tests:
+  unit_tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,4 +24,3 @@ jobs:
           poetry --version
           poetry install -E testing
           poetry run pytest tests/
-    
