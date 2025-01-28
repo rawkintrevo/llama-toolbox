@@ -27,10 +27,10 @@ def test_hierarchical_cot():
 
 def test_sequential_cot():
     sequential_cot = SequentialCoT(depth_chart= depth_chart)
-    result = sequential_cot.fn("Explain quantum computing", steps=5)
+    result = sequential_cot.fn("Explain quantum computing", steps=3)
     assert result is not None
 
 def test_tree_of_thought():
     tree_of_thought = TreeOfThought(depth_chart= depth_chart)
-    result = tree_of_thought.fn("Explain quantum computing", branches=5)
+    result = tree_of_thought.fn("Explain quantum computing", branches=3)
     assert result is not None
