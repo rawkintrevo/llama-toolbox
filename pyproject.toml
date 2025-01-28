@@ -12,7 +12,7 @@ python = "^3.10"
 GitPython = "^3.1.43"
 python-dotenv = "^1.0.1"
 
-[project.optional-dependencies]
+[tool.poetry.extras]
 testing = ["pytest"]
 
 [build-system]
