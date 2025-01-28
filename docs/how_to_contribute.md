@@ -115,7 +115,15 @@ Add a link to your documentation in the appropriate index.md file.
 
 ## 6. Testing Your Function
 
-**TODO: Add Tests**
+### Running Tests Locally
+
+1. Clone the repository: `git clone https://github.com/your-repo/llama-toolbox.git`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run tests: `pytest tests/`
+
+### GitHub Action
+
+The GitHub Action will run automatically on pull requests to the main branch. You can view the test results in the GitHub Actions tab.
 
 Write unit tests for your function. Create a new test file in the tests/ directory:
 
