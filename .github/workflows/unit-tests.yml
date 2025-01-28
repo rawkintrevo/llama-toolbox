@@ -24,7 +24,7 @@ jobs:
           poetry --version
       - name: Install dependencies
         run: |
-          pip install -e '.[testing]'
+          poetry install -E testing
       - name: Run tests
         run: |
           poetry run pytest tests/
