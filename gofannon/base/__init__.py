@@ -232,7 +232,7 @@ class BaseTool(ABC):
             # Create args schema from definition
         class ArgsSchema(BaseModel):
             __annotations__ = {
-                k: (type(json.loads(v).get("type", str)), Field(..., description=json.loads(v).get("description", "")))
+                k: (type(v.get("type", str)), Field(..., description=v.get("description", "")))
                 for k, v in self.definition.get("function", {}).get("parameters", {}).items()
             }
 
