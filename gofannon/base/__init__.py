@@ -223,6 +223,8 @@ class BaseTool(ABC):
                 "langchain is not installed. Install with `pip install langchain-core`"
             )
 
+        from pydantic import create_model
+
         # Create type mapping from JSON schema types to Python types
         type_map = {
             "number": float,
@@ -236,19 +238,19 @@ class BaseTool(ABC):
         parameters = self.definition.get("function", {}).get("parameters", {})
         param_properties = parameters.get("properties", {})
 
-        class ArgsSchema(BaseModel):
-            __annotations__ = {
-                k: (
-                    type_map.get(
-                        v.get("type", "string"),  # Default to string if type not specified
-                        str
-                    ),
-                    Field(..., description=v.get("description", ""))
-                )
-                for k, v in param_properties.items()
-            }
+        # Dynamically create ArgsSchema using pydantic.create_model
+        fields = {}
+        for param_name, param_def in param_properties.items():
+            param_type = param_def.get("type", "string")
+            description = param_def.get("description", "")
+            fields[param_name] = (
+                type_map.get(param_type, str),
+                Field(..., description=description)
+            )
 
-            # Create tool subclass with our functionality
+        ArgsSchema = create_model('ArgsSchema', **fields)
+
+        # Create tool subclass with our functionality
         class ExportedTool(LangchainBaseTool):
             name = self.definition.get("function", {}).get("name", "")
             description = self.definition.get("function", {}).get("description", "")
