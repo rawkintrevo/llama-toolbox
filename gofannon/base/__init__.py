@@ -1,7 +1,7 @@
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict, Any
+from typing import Dict, Any, Callable
 import json
 import logging
 from pathlib import Path
@@ -241,10 +241,11 @@ class BaseTool(ABC):
             name: str = self.definition.get("function", {}).get("name", "")
             description: str = self.definition.get("function", {}).get("description", "")
             args_schema: Type[BaseModel] = ArgsSchema
+            fn: Callable = self.fn
 
             def _run(self, *args, **kwargs):
                 return self.fn(*args, **kwargs)
 
         # Instantiate and return the tool
-        tool = ExportedTool(fn=self.fn)
+        tool = ExportedTool()
         return tool
