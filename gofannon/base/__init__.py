@@ -223,16 +223,32 @@ class BaseTool(ABC):
                 "langchain is not installed. Install with `pip install langchain-core`"
             )
 
+        # Create type mapping from JSON schema types to Python types
+        type_map = {
+            "number": float,
+            "string": str,
+            "integer": int,
+            "boolean": bool,
+            "object": dict,
+            "array": list
+        }
+
         parameters = self.definition.get("function", {}).get("parameters", {})
         param_properties = parameters.get("properties", {})
 
         class ArgsSchema(BaseModel):
             __annotations__ = {
-                k: (eval(v.get("type", "str")),  # Convert type string to actual type
-                    Field(..., description=v.get("description", "")))
+                k: (
+                    type_map.get(
+                        v.get("type", "string"),  # Default to string if type not specified
+                        str
+                    ),
+                    Field(..., description=v.get("description", ""))
+                )
                 for k, v in param_properties.items()
             }
 
+            # Create tool subclass with our functionality
         class ExportedTool(LangchainBaseTool):
             name = self.definition.get("function", {}).get("name", "")
             description = self.definition.get("function", {}).get("description", "")
@@ -241,6 +257,7 @@ class BaseTool(ABC):
             def _run(self, *args, **kwargs):
                 return self.fn(*args, **kwargs)
 
+                # Instantiate and return the tool
         tool = ExportedTool()
-        tool.fn = self.fn
+        tool.fn = self.fn  # Direct reference to our implementation
         return tool
