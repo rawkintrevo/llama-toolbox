@@ -181,16 +181,8 @@ class BaseTool(ABC):
         return exported_tool
 
     def import_from_langchain(self, langchain_tool: "LangchainBaseTool"):
-        """
-        Adapt a LangChain tool to work with this BaseTool implementation.
-
-        Args:
-            langchain_tool: Instance of a Langchain BaseTool to adapt
-        """
         if not _HAS_LANGCHAIN:
-            raise RuntimeError(
-                "langchain is not installed. Install with `pip install langchain-core`"
-            )
+            raise RuntimeError("langchain is not installed. Install with `pip install langchain-core`")
 
         self.name = getattr(langchain_tool, "name", "exported_langchain_tool")
         self.description = getattr(langchain_tool, "description", "No description provided.")
@@ -201,17 +193,11 @@ class BaseTool(ABC):
         else:
             args_schema = {}
 
-        self.definition = {
-            "type": "function",
-            "function": {
-                "name": self.name,
-                "description": self.description,
-                "parameters": args_schema.get("properties", {}),
-                "required": args_schema.get("required", [])
-            }
-        }
+            # Store parameters to avoid modifying the definition property directly
+        self._parameters = args_schema.get("properties", {})
+        self._required = args_schema.get("required", [])
 
-        # Wrap the LangChain execution method
+        # Adapt the LangChain tool's execution method
         def adapted_fn(*args, **kwargs):
             return langchain_tool._run(*args, **kwargs)
 

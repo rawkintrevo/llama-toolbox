@@ -11,16 +11,19 @@ class DummyTool(BaseTool):
         return {
             "type": "function",
             "function": {
-                "name": "dummy",
-                "description": "Dummy tool for testing",
-                "parameters": {}
+                "name": self.name,
+                "description": self.description,
+                "parameters": {
+                    "properties": self._parameters,
+                    "required": self._required
+                }
             }
         }
 
     def fn(self, *args, **kwargs):
         return "dummy result"
 
-    # LangChain tests
+        # LangChain tests
 def test_langchain_import_export():
     try:
         from langchain.tools import BaseTool as LangchainBaseTool
