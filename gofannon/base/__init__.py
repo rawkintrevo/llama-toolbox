@@ -259,7 +259,6 @@ class BaseTool(ABC):
             def _run(self, *args, **kwargs):
                 return self.fn(*args, **kwargs)
 
-                # Instantiate and return the tool
-        tool = ExportedTool()
-        tool.fn = self.fn  # Direct reference to our implementation
+        # Instantiate and return the tool
+        tool = ExportedTool(fn=self.fn)
         return tool
