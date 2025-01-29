@@ -1,4 +1,3 @@
-# llama_toolbox/arxiv/get_article.py
 from..base import BaseTool
 import requests
 from ..config import FunctionRegistry

@@ -1,4 +1,3 @@
-# llama_toolbox/github/commit_files.py
 import os
 
 import requests
@@ -39,7 +38,7 @@ class CommitFiles(BaseTool):
                     "properties": {
                         "repo_url": {
                             "type": "string",
-                            "description": "The URL of the repository, e.g. https://github.com/rawkintrevo/llama-toolbox"
+                            "description": "The URL of the repository, e.g. https://github.com/The-AI-Alliance//gofannon"
                         },
                         "branch": {
                             "type": "string",

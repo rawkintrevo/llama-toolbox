@@ -7,10 +7,11 @@ Breaks down complex problems into hierarchical sections and expands each level s
 - `depth`: Number of hierarchical levels to create (default: 2)
 
 ## Example
-```python
-from llama_toolbox.reasoning import HierarchicalCoT
 
-depth_chart = [...] # Configure your model stack
+```python
+from gofannon.reasoning import HierarchicalCoT
+
+depth_chart = [...]  # Configure your model stack
 hcot = HierarchicalCoT(depth_chart)
 result = hcot.fn("Explain quantum computing", depth=3)
 ```

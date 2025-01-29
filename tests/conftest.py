@@ -1,6 +1,6 @@
 import pytest
-from llama_toolbox.base import BaseTool
-from llama_toolbox.config import FunctionRegistry
+from gofannon.base import BaseTool
+from gofannon.config import FunctionRegistry
 
 @pytest.fixture
 def tools():

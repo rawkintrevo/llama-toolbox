@@ -33,9 +33,9 @@ class FunctionRegistry:
         return [cls._tools[name]().definition for name in cls._tools]
 
 def setup_logging():
-    """Configure logging for the llama-toolbox package."""
-    logger = logging.getLogger('llama_toolbox')
-    log_level = os.getenv('LLAMA_TOOLBOX_LOG_LEVEL', 'WARNING').upper()
+    """Configure logging for the gofannon package."""
+    logger = logging.getLogger('')
+    log_level = os.getenv('GOFANNON_LOG_LEVEL', 'WARNING').upper()
     level = getattr(logging, log_level, logging.WARNING)
 
     # Clear existing handlers if any

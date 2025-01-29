@@ -1,5 +1,5 @@
 import pytest
-from llama_toolbox.arxiv import GetArticle, Search
+from gofannon.arxiv import GetArticle, Search
 
 def test_get_article():
     get_article = GetArticle()

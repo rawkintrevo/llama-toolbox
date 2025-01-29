@@ -1,6 +1,6 @@
 import pytest
 from os import getenv
-from llama_toolbox.github import CommitFile, CreateIssue, GetRepoContents, ReadIssue, SearchRepos
+from gofannon.github import CommitFile, CreateIssue, GetRepoContents, ReadIssue, SearchRepos
 
 # def test_commit_file():
 #     commit_file = CommitFile(api_key=getenv('TEST_GITHUB_TOKEN'))

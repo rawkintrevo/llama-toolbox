@@ -1,5 +1,5 @@
 import pytest
-from llama_toolbox.nhsta import ComplaintsByVehicle
+from gofannon.nhsta import ComplaintsByVehicle
 
 def test_complaints_by_vehicle():
     complaints_by_vehicle = ComplaintsByVehicle()

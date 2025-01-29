@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import json
 from openai import OpenAI
-from llama_toolbox.base import BaseTool
+from gofannon.base import BaseTool
 
 sample_depth_chart = [
     {'model_name' : "Qwen/Qwen2.5-72B-Instruct",

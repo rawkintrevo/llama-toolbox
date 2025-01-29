@@ -1,6 +1,6 @@
 import json
 from openai import OpenAI
-from llama_toolbox.reasoning.base import ReasoningTool
+from gofannon.reasoning.base import ReasoningTool
 from ..config import FunctionRegistry
 import logging
 

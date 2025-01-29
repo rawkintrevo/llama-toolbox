@@ -1,4 +1,3 @@
-# llama_toolbox/reasoning/hierarchical_cot.py
 import json
 import logging
 from openai import OpenAI, APIError

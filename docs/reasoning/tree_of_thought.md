@@ -17,10 +17,10 @@ trees until they reach `evaluation_depth`
 ## Example
 
 ```python
-from llama_toolbox.reasoning import TreeOfThought
+from gofannon.reasoning import TreeOfThought
 
-depth_chart = [...] # Configure your model stack  
-tot = TreeOfThought(depth_chart)  
+depth_chart = [...]  # Configure your model stack  
+tot = TreeOfThought(depth_chart)
 result = tot.fn("Develop a climate change mitigation plan", branches=5)  
 ```
 

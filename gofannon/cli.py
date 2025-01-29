@@ -27,7 +27,7 @@ def main():
         # Import and instantiate tools
     tools = []
     for tool_config in workflow_config['tools']:
-        module = __import__(f"llama_toolbox.{tool_config['module']}", fromlist=[tool_config['class']])
+        module = __import__(f".{tool_config['module']}", fromlist=[tool_config['class']])
         tool_class = getattr(module, tool_config['class'])
         tool = tool_class(**tool_config.get('params', {}))
         tools.append(tool)

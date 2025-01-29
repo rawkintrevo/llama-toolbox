@@ -47,42 +47,43 @@ Add your function under the appropriate directory in `llama-toolbox/`. If it's a
 All functions must extend the `BaseTool` class. Here's the basic structure:
 
 ```python  
-from llama_toolbox.base import BaseTool  
-from llama_toolbox.config import FunctionRegistry
+from gofannon.base import BaseTool
+from gofannon.config import FunctionRegistry
 
-@FunctionRegistry.register  
-class NewFunction(BaseTool):  
-    def __init__(self, name="new_function"):  
-        super().__init__()  
+
+@FunctionRegistry.register
+class NewFunction(BaseTool):
+    def __init__(self, name="new_function"):
+        super().__init__()
         self.name = name
 
-    @property  
-    def definition(self):  
-        return {  
-            "type": "function",  
-            "function": {  
-                "name": self.name,  
-                "description": "Description of what the function does",  
-                "parameters": {  
-                    "type": "object",  
-                    "properties": {  
-                        "param1": {  
-                            "type": "string",  
-                            "description": "Description of param1"  
-                        }  
-                    },  
-                    "required": ["param1"]  
-                }  
-            }  
-        }  
-  
-    def fn(self, param1):  
+    @property
+    def definition(self):
+        return {
+            "type": "function",
+            "function": {
+                "name": self.name,
+                "description": "Description of what the function does",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "param1": {
+                            "type": "string",
+                            "description": "Description of param1"
+                        }
+                    },
+                    "required": ["param1"]
+                }
+            }
+        }
+
+    def fn(self, param1):
         # Implementation goes here  
-        try:  
+        try:
             # Your code  
-            return result  
-        except Exception as e:  
-            self.log_error(f"Error in new_function: {str(e)}")  
+            return result
+        except Exception as e:
+            self.log_error(f"Error in new_function: {str(e)}")
             raise  
 ```
 
@@ -129,10 +130,13 @@ Write unit tests for your function. Create a new test file in the tests/ directo
 
 ```python
 import pytest
-from llama_toolbox.new_api.new_function import NewFunction
+from gofannon.new_api.new_function import NewFunction
+
 
 def test_new_function():
-func = NewFunction()
+
+
+    func = NewFunction()
 result = func.fn("test")
 assert result == expected_value
 ```

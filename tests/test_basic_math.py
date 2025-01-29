@@ -1,5 +1,5 @@
 import pytest
-from llama_toolbox.basic_math import Addition, Subtraction, Multiplication, Division, Exponents
+from gofannon.basic_math import Addition, Subtraction, Multiplication, Division, Exponents
 
 def test_addition():
     addition = Addition()

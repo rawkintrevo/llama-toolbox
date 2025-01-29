@@ -1,5 +1,3 @@
-# llama-toolbox/github/create_issue.py
-
 from requests import post
 from json import dumps
 from..base import BaseTool
@@ -30,7 +28,7 @@ class CreateIssue(BaseTool):
                     "properties": {
                         "repo_url": {
                             "type": "string",
-                            "description": "The URL of the repository, e.g. https://github.com/rawkintrevo/llama-toolbox"
+                            "description": "The URL of the repository, e.g. https://github.com/The-AI-Alliance//gofannon"
                         },
                         "title": {
                             "type": "string",

@@ -7,6 +7,16 @@ import logging
 from pathlib import Path
 from ..config import ToolConfig
 
+from typing import Any, Dict
+
+
+try:
+    from smolagents.tools import Tool as SmolTool
+    from smolagents.tools import tool as smol_tool_decorator
+    _HAS_SMOLAGENTS = True
+except ImportError:
+    _HAS_SMOLAGENTS = False
+
 @dataclass
 class ToolResult:
     success: bool
@@ -107,3 +117,66 @@ class BaseTool(ABC):
                 error=str(e),
                 retryable=True
             )
+
+    def import_from_smolagents(self, smol_tool: "SmolTool"):
+        """
+        Takes a smolagents Tool instance and adapts it into this BaseTool.
+        You might copy relevant attributes like name, description, inputs, etc.
+        And adjust self.fn to call the smolagents Tool forward method.
+        """
+        if not _HAS_SMOLAGENTS:
+            raise RuntimeError(
+                "smolagents is not installed or could not be imported. "
+                "Install it or check your environment."
+            )
+
+            # Example adaptation – adjust to suit your actual logic:
+        self.name = smol_tool.name
+        self.description = smol_tool.description
+
+        # Optionally, if your 'definition' is dynamic, store some fields:
+        # e.g.:
+        # self.my_inputs = smol_tool.inputs
+        # self.my_output_type = smol_tool.output_type
+
+        def adapted_fn(*args, **kwargs):
+            # This calls the smol_tool with the same signature
+            return smol_tool.forward(*args, **kwargs)
+
+            # Overwrite this tool's .fn with a new function that calls the smol_tool
+        self.fn = adapted_fn
+
+    def export_to_smolagents(self) -> "SmolTool":
+        """
+        Export this BaseTool as a smolagents Tool instance.
+        This sets up a smolagents-style forward method that calls self.fn.
+        """
+        if not _HAS_SMOLAGENTS:
+            raise RuntimeError(
+                "smolagents is not installed or could not be imported. "
+                "Install it or check your environment."
+            )
+
+            # Provide a standard forward function that calls self.fn
+        def smol_forward(*args, **kwargs):
+            return self.fn(*args, **kwargs)
+
+            # Optionally define inputs / output_type if desired. E.g.:
+        inputs_definition = {
+            "example_arg": {
+                "type": "string",
+                "description": "Example argument recognized by this tool"
+            }
+        }
+        output_type = "string"
+
+        # Construct a new smolagents Tool with the minimal fields
+        exported_tool = SmolTool()
+        exported_tool.name = getattr(self, "name", "exported_base_tool")
+        exported_tool.description = getattr(self, "description", "Exported from BaseTool")
+        exported_tool.inputs = inputs_definition
+        exported_tool.output_type = output_type
+        exported_tool.forward = smol_forward
+        exported_tool.is_initialized = True
+
+        return exported_tool
