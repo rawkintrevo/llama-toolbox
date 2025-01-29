@@ -5,7 +5,7 @@ description = "A collection of tools for LLMs"
 authors = ["Trevor Grant <trevor.d.grant@gmail.com>"]
 license = "ASFv2"
 readme = "README.md"
-packages = [{include = "llama_toolbox"}]
+packages = [{include = "gofannon"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
