@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "llama_toolbox"
+name = "gofannon"
 version = "0.1.0"
 description = "A collection of tools for LLaMA 3.x LLMs"
 authors = ["Trevor Grant <trevor.d.grant@gmail.com>"]

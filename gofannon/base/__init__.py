@@ -17,6 +17,14 @@ try:
 except ImportError:
     _HAS_SMOLAGENTS = False
 
+try:
+    from langchain.tools import BaseTool as LangchainBaseTool
+    from langchain.pydantic_v1 import BaseModel, Field
+    from typing import Type, Optional
+    _HAS_LANGCHAIN = True
+except ImportError:
+    _HAS_LANGCHAIN = False
+
 @dataclass
 class ToolResult:
     success: bool
@@ -180,3 +188,71 @@ class BaseTool(ABC):
         exported_tool.is_initialized = True
 
         return exported_tool
+
+    def import_from_langchain(self, langchain_tool: "LangchainBaseTool"):
+        """
+        Adapt a LangChain tool to work with this BaseTool implementation.
+
+        Args:
+            langchain_tool: Instance of a Langchain BaseTool to adapt
+        """
+        if not _HAS_LANGCHAIN:
+            raise RuntimeError(
+                "langchain is not installed. Install with `pip install langchain-core`"
+            )
+
+            # Copy core metadata
+        self.name = langchain_tool.name
+        self.description = langchain_tool.description
+
+        # Create definition from LangChain args schema
+        args_schema = langchain_tool.args_schema.schema() if langchain_tool.args_schema else {}
+
+        self.definition = {
+            "type": "function",
+            "function": {
+                "name": self.name,
+                "description": self.description,
+                "parameters": args_schema.get("properties", {}),
+                "required": args_schema.get("required", [])
+            }
+        }
+
+        # Wrap the LangChain execution method
+        def adapted_fn(*args, **kwargs):
+            return langchain_tool._run(*args, **kwargs)
+
+        self.fn = adapted_fn
+
+    def export_to_langchain(self) -> "LangchainBaseTool":
+        """
+        Export this tool as a LangChain compatible BaseTool instance.
+
+        Returns:
+            LangchainBaseTool: Instance of a Langchain tool
+        """
+        if not _HAS_LANGCHAIN:
+            raise RuntimeError(
+                "langchain is not installed. Install with `pip install langchain-core`"
+            )
+
+            # Create args schema from definition
+        class ArgsSchema(BaseModel):
+            __annotations__ = {
+                k: (type(v.get("type", str)), Field(..., description=v.get("description", "")))
+                for k, v in self.definition.get("function", {}).get("parameters", {}).items()
+            }
+
+            # Create tool subclass with our functionality
+        class ExportedTool(LangchainBaseTool):
+            name = self.definition.get("function", {}).get("name", "")
+            description = self.definition.get("function", {}).get("description", "")
+            args_schema: Type[BaseModel] = ArgsSchema
+
+            def _run(self, *args, **kwargs):
+                return self.fn(*args, **kwargs)
+
+                # Instantiate and return the tool
+        tool = ExportedTool()
+        tool.fn = self.fn  # Direct reference to our implementation
+        return tool  
