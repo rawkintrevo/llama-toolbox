@@ -128,35 +128,26 @@ class BaseTool(ABC):
 
     def import_from_smolagents(self, smol_tool: "SmolTool"):
         """
-        Takes a smolagents Tool instance and adapts it into this BaseTool.
-        You might copy relevant attributes like name, description, inputs, etc.
-        And adjust self.fn to call the smolagents Tool forward method.
+        Takes a smolagents Tool instance and adapts it into this Tool.
         """
         if not _HAS_SMOLAGENTS:
             raise RuntimeError(
                 "smolagents is not installed or could not be imported. "
                 "Install it or check your environment."
             )
+        self.name = getattr(smol_tool, "name", "exported_smol_tool")
+        self.description = getattr(smol_tool, "description", "No description provided.")
 
-            # Example adaptation – adjust to suit your actual logic:
-        self.name = smol_tool.name
-        self.description = smol_tool.description
-
-        # Optionally, if your 'definition' is dynamic, store some fields:
-        # e.g.:
-        # self.my_inputs = smol_tool.inputs
-        # self.my_output_type = smol_tool.output_type
 
         def adapted_fn(*args, **kwargs):
-            # This calls the smol_tool with the same signature
             return smol_tool.forward(*args, **kwargs)
 
-            # Overwrite this tool's .fn with a new function that calls the smol_tool
+
         self.fn = adapted_fn
 
     def export_to_smolagents(self) -> "SmolTool":
         """
-        Export this BaseTool as a smolagents Tool instance.
+        Export this Tool as a smolagents Tool instance.
         This sets up a smolagents-style forward method that calls self.fn.
         """
         if not _HAS_SMOLAGENTS:
@@ -169,7 +160,7 @@ class BaseTool(ABC):
         def smol_forward(*args, **kwargs):
             return self.fn(*args, **kwargs)
 
-            # Optionally define inputs / output_type if desired. E.g.:
+
         inputs_definition = {
             "example_arg": {
                 "type": "string",
@@ -181,7 +172,7 @@ class BaseTool(ABC):
         # Construct a new smolagents Tool with the minimal fields
         exported_tool = SmolTool()
         exported_tool.name = getattr(self, "name", "exported_base_tool")
-        exported_tool.description = getattr(self, "description", "Exported from BaseTool")
+        exported_tool.description = getattr(self, "description", "Exported from Tool")
         exported_tool.inputs = inputs_definition
         exported_tool.output_type = output_type
         exported_tool.forward = smol_forward
@@ -201,12 +192,14 @@ class BaseTool(ABC):
                 "langchain is not installed. Install with `pip install langchain-core`"
             )
 
-            # Copy core metadata
-        self.name = langchain_tool.name
-        self.description = langchain_tool.description
+        self.name = getattr(langchain_tool, "name", "exported_langchain_tool")
+        self.description = getattr(langchain_tool, "description", "No description provided.")
 
-        # Create definition from LangChain args schema
-        args_schema = langchain_tool.args_schema.schema() if langchain_tool.args_schema else {}
+        maybe_args_schema = getattr(langchain_tool, "args_schema", None)
+        if maybe_args_schema and hasattr(maybe_args_schema, "schema") and callable(maybe_args_schema.schema):
+            args_schema = maybe_args_schema.schema()
+        else:
+            args_schema = {}
 
         self.definition = {
             "type": "function",
@@ -255,4 +248,4 @@ class BaseTool(ABC):
                 # Instantiate and return the tool
         tool = ExportedTool()
         tool.fn = self.fn  # Direct reference to our implementation
-        return tool  
+        return tool
