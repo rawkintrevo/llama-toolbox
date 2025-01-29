@@ -48,18 +48,16 @@ def test_smolagents_import_export():
     def test_fn(a: int, b: int) -> int:
         return a + b
 
-    smol_tool = SmolTool(
-        name="test_addition",
-        description="Adds numbers",
-        inputs={
+    smol_tool = SmolTool()
+    smol_tool.name="test_addition",
+    smol_tool.description="Adds numbers",
+    smol_tool.inputs={
             "a": {"type": "int", "description": "First number"},
             "b": {"type": "int", "description": "Second number"}
         },
-        output_type="int",
-        forward=test_fn
-    )
+    smol_tool.output_type="int",
+    smol_tool.forward=test_fn
 
-    # Use DummyTool instead of BaseTool  
     base_tool = DummyTool()
     base_tool.import_from_smolagents(smol_tool)
 
