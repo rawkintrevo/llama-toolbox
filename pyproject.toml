@@ -16,7 +16,7 @@ python-dotenv = "^1.0.1"
 pytest = "^8.3.4"
 langchain = "^0.3.16"
 smolagents = "^1.6.0"
-pydantic = "^2.10.6"
+pydantic = ">=1.10,<2.0"
 
 [build-system]
 requires = ["poetry-core"]
