@@ -206,8 +206,8 @@ class BaseTool(ABC):
             "function": {
                 "name": self.name,
                 "description": self.description,
-                "parameters": json.dumps(args_schema).get("properties", {}),
-                "required": json.dumps(args_schema).get("required", [])
+                "parameters": args_schema.get("properties", {}),
+                "required": args_schema.get("required", [])
             }
         }
 
