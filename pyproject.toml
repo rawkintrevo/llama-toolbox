@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "gofannon"
 version = "0.1.0"
-description = "A collection of tools for LLaMA 3.x LLMs"
+description = "A collection of tools for LLMs"
 authors = ["Trevor Grant <trevor.d.grant@gmail.com>"]
 license = "ASFv2"
 readme = "README.md"
@@ -14,6 +14,8 @@ requests = "^2.32.3"
 GitPython = "^3.1.43"
 python-dotenv = "^1.0.1"
 pytest = "^8.3.4"
+langchain = "^0.3.16"
+smolagents = "^1.6.0"
 
 [build-system]
 requires = ["poetry-core"]
