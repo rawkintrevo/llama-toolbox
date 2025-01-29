@@ -135,7 +135,7 @@ class BaseTool(ABC):
                 "smolagents is not installed or could not be imported. "
                 "Install it or check your environment."
             )
-        self.name = smol_tool.name#getattr(smol_tool, "name", "exported_smol_tool")
+        self.name = smol_tool.name[0]
         self.description = smol_tool.description #getattr(smol_tool, "description", "No description provided.")
 
 
@@ -233,7 +233,7 @@ class BaseTool(ABC):
         class ArgsSchema(BaseModel):
             __annotations__ = {
                 k: (type(v.get("type", str)), Field(..., description=v.get("description", "")))
-                for k, v in json.loads(self.definition.get("function", {})).get("parameters", {}).items()
+                for k, v in self.definition.get("function", {}).get("parameters", {}).items()
             }
 
             # Create tool subclass with our functionality
