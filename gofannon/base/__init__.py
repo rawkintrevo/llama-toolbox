@@ -135,8 +135,8 @@ class BaseTool(ABC):
                 "smolagents is not installed or could not be imported. "
                 "Install it or check your environment."
             )
-        self.name = getattr(smol_tool, "name", "exported_smol_tool")
-        self.description = getattr(smol_tool, "description", "No description provided.")
+        self.name = smol_tool.name#getattr(smol_tool, "name", "exported_smol_tool")
+        self.description = smol_tool.description #getattr(smol_tool, "description", "No description provided.")
 
 
         def adapted_fn(*args, **kwargs):
@@ -206,8 +206,8 @@ class BaseTool(ABC):
             "function": {
                 "name": self.name,
                 "description": self.description,
-                "parameters": args_schema.get("properties", {}),
-                "required": args_schema.get("required", [])
+                "parameters": json.dumps(args_schema).get("properties", {}),
+                "required": json.dumps(args_schema).get("required", [])
             }
         }
 
