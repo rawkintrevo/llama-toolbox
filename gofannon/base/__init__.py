@@ -252,8 +252,8 @@ class BaseTool(ABC):
 
         # Create tool subclass with our functionality
         class ExportedTool(LangchainBaseTool):
-            name = self.definition.get("function", {}).get("name", "")
-            description = self.definition.get("function", {}).get("description", "")
+            name: str = self.definition.get("function", {}).get("name", "")
+            description: str = self.definition.get("function", {}).get("description", "")
             args_schema: Type[BaseModel] = ArgsSchema
 
             def _run(self, *args, **kwargs):
