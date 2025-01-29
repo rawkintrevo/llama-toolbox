@@ -218,25 +218,21 @@ class BaseTool(ABC):
         self.fn = adapted_fn
 
     def export_to_langchain(self) -> "LangchainBaseTool":
-        """
-        Export this tool as a LangChain compatible BaseTool instance.
-
-        Returns:
-            LangchainBaseTool: Instance of a Langchain tool
-        """
         if not _HAS_LANGCHAIN:
             raise RuntimeError(
                 "langchain is not installed. Install with `pip install langchain-core`"
             )
 
-            # Create args schema from definition
+        parameters = self.definition.get("function", {}).get("parameters", {})
+        param_properties = parameters.get("properties", {})
+
         class ArgsSchema(BaseModel):
             __annotations__ = {
-                k: (type(v.get("type", str)), Field(..., description=v.get("description", "")))
-                for k, v in self.definition.get("function", {}).get("parameters", {}).items()
+                k: (eval(v.get("type", "str")),  # Convert type string to actual type
+                    Field(..., description=v.get("description", "")))
+                for k, v in param_properties.items()
             }
 
-            # Create tool subclass with our functionality
         class ExportedTool(LangchainBaseTool):
             name = self.definition.get("function", {}).get("name", "")
             description = self.definition.get("function", {}).get("description", "")
@@ -245,7 +241,6 @@ class BaseTool(ABC):
             def _run(self, *args, **kwargs):
                 return self.fn(*args, **kwargs)
 
-                # Instantiate and return the tool
         tool = ExportedTool()
-        tool.fn = self.fn  # Direct reference to our implementation
+        tool.fn = self.fn
         return tool
