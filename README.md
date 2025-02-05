@@ -1,3 +1,6 @@
+This repo is depricated!! But it lives on at https://github.com/The-AI-Alliance/gofannon
+please add issues/PRs/etc there. 
+
 ![llama-toolbox logo](./llama_toolbox.jpeg)  
   
 # llama-toolbox  
